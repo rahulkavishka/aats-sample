@@ -101,7 +101,7 @@ export default function AuditAssurance() {
 
     // --- Pagination Logic ---
     const [currentPage, setCurrentPage] = useState(1)
-    const itemsPerPage = 12
+    const itemsPerPage = 10
     const totalPages = Math.ceil(filteredRecords.length / itemsPerPage)
     const startIndex = (currentPage - 1) * itemsPerPage
     const currentRecords = filteredRecords.slice(startIndex, startIndex + itemsPerPage)
@@ -371,7 +371,7 @@ export default function AuditAssurance() {
                                         <StatusBadge status={record.paymentStatus} />
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="outline" className="font-mono text-xs">{record.process}</Badge>
+                                        <Badge variant="outline" className="font-mono text-[13px] px-3 py-1 uppercase tracking-wider font-bold">{record.process}</Badge>
                                     </TableCell>
                                 </TableRow>
                             ))

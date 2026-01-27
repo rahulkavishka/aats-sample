@@ -89,7 +89,7 @@ export default function ForensicAuditDashboard() {
     })
 
     const [currentPage, setCurrentPage] = useState(1)
-    const itemsPerPage = 12
+    const itemsPerPage = 10
     const totalPages = Math.ceil(filteredRecords.length / itemsPerPage)
     const startIndex = (currentPage - 1) * itemsPerPage
     const currentRecords = filteredRecords.slice(startIndex, startIndex + itemsPerPage)
@@ -343,7 +343,7 @@ export default function ForensicAuditDashboard() {
                                         <StatusBadge status={record.paymentStatus} />
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="outline" className="font-mono text-xs">{record.process || "-"}</Badge>
+                                        <Badge variant="outline" className="font-mono text-[13px] px-3 py-1 uppercase tracking-wider font-bold">{record.process || "-"}</Badge>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -382,19 +382,53 @@ export default function ForensicAuditDashboard() {
                             Guide: Forensic Audit Dashboard
                         </DialogTitle>
                         <DialogDescription>
-                            Detailed tracking for fraud investigations and legal support audits.
+                            Master the tools for tracking and managing forensic investigations and legal support audits.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-6 py-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
-                                <h4 className="font-semibold text-sm">Advanced Searching</h4>
-                                <p className="text-xs text-muted-foreground">Quickly find audits by ID, Client, or specified investigative period.</p>
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">1</div>
+                                    Advanced Filtering
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Filter by Specific Date, Month, Year, or Period. Combine with Status and Process filters for precision.
+                                </p>
                             </div>
                             <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
-                                <h4 className="font-semibold text-sm">Linear Processes</h4>
-                                <p className="text-xs text-muted-foreground">Follow the reporting and meeting workflows essential for forensic evidence.</p>
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">2</div>
+                                    Bulk Actions
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Select multiple records using the checkboxes to perform bulk deletion and management tasks.
+                                </p>
                             </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">3</div>
+                                    Linear Processes
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Follow the reporting and meeting workflows essential for maintaining forensic evidence integrity.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">4</div>
+                                    Real-time Search
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Instantly find any client by name or ID using the global search bar updated in real-time.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                            <h5 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Pro Tip</h5>
+                            <p className="text-xs leading-relaxed text-muted-foreground">
+                                Use the "Specific Period" filter to generate custom reports for any date range required by your firm.
+                            </p>
                         </div>
                     </div>
                     <DialogFooter>

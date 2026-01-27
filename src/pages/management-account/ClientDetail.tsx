@@ -30,7 +30,8 @@ export default function ManagementAccountClientDetail() {
         sourceDocuments: [
             { id: "doc-1", name: "Bank_Statement_Jan.pdf", description: "January bank statements for reconciliation", size: "1.2MB" },
             { id: "doc-2", name: "Invoices_Q4.pdf", description: "Expense invoices from Q4 2023", size: "2.4MB" }
-        ]
+        ],
+        logo: null
     }
 
     const getCurrentStepIndex = () => processes.indexOf(currentProcess)
@@ -73,7 +74,11 @@ export default function ManagementAccountClientDetail() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                     <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm ring-1 ring-primary/20">
-                        <Building2 className="size-7" />
+                        {clientData.logo ? (
+                            <img src={clientData.logo} alt={clientData.clientName} className="size-8 object-contain" />
+                        ) : (
+                            <Building2 className="size-7" />
+                        )}
                     </div>
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{clientData.clientName}</h1>
                 </div>
@@ -93,7 +98,7 @@ export default function ManagementAccountClientDetail() {
                 ].map((item, i) => (
                     <Card key={i} className="shadow-sm border-slate-100 dark:border-slate-800">
                         <CardContent className="p-4 space-y-1">
-                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{item.label}</p>
+                            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{item.label}</p>
                             <p className={cn("text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight", item.mono && "font-mono")}>{item.value}</p>
                         </CardContent>
                     </Card>
@@ -162,7 +167,7 @@ export default function ManagementAccountClientDetail() {
             </div>
 
             {/* Footer Actions */}
-            <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
+            <div className="pt-8 pb-6 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
                 <button className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 order-2 md:order-1" onClick={() => setHelpDialogOpen(true)}>
                     <HelpCircle className="h-4 w-4" /> Learn more about Client Page
                 </button>
@@ -195,13 +200,65 @@ export default function ManagementAccountClientDetail() {
             </Dialog>
 
             <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
-                <DialogContent className="max-w-xl">
-                    <DialogHeader><DialogTitle>Management Account Guide</DialogTitle></DialogHeader>
-                    <div className="py-2 text-sm text-muted-foreground space-y-2">
-                        <p>1. Review core info and assignment.</p>
-                        <p>2. Complete the 4-stage process workflow.</p>
-                        <p>3. Ensure all source documents are verified before final handover.</p>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-xl">
+                            <HelpCircle className="h-6 w-6 text-primary" />
+                            Guide: Managing Client Details
+                        </DialogTitle>
+                        <DialogDescription>
+                            Everything you need to know about the Client Detail view and workflow.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-6 py-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">1</div>
+                                    Information Cards
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Quickly view essential details like Registration ID, Date, and Payment status at a glance.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">2</div>
+                                    Workflow Stepper
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Follow the 4-stage linear workflow from Bookkeeping to Final Handover of management reports.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">3</div>
+                                    Document Handling
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Access all attached billing invoices. Use the inline icons to download or print files directly.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">4</div>
+                                    Manage Records
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Use the Edit and Delete buttons at the bottom to modify details or permanently remove the client record.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                            <h5 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Pro Tip</h5>
+                            <p className="text-xs leading-relaxed text-muted-foreground">
+                                Detailed assignment names help in better identification during audit tracking. Ensure all documents are verified before Final Handover.
+                            </p>
+                        </div>
                     </div>
+                    <DialogFooter>
+                        <Button onClick={() => setHelpDialogOpen(false)}>Got it, thanks!</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>

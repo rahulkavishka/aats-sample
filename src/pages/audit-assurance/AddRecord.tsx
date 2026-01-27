@@ -205,7 +205,7 @@ export default function AddRecord() {
                                         onChange={handleLogoInputChange}
                                     />
                                     <div
-                                        className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors w-[200px] h-[136px] relative overflow-hidden"
+                                        className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors w-[200px] h-[120px] relative overflow-hidden"
                                         onClick={() => logoInputRef.current?.click()}
                                         onDragOver={handleDragOver}
                                         onDrop={handleLogoDrop}
@@ -327,13 +327,13 @@ export default function AddRecord() {
                             <div className="space-y-2">
                                 <Label htmlFor="subtotal">Sub Total</Label>
                                 <div className="relative">
-                                    <span className="absolute left-3 inset-y-0 flex items-center text-muted-foreground">
-                                        $
+                                    <span className="absolute left-3 inset-y-0 flex items-center text-muted-foreground text-sm font-bold uppercase">
+                                        LKR
                                     </span>
                                     <Input
                                         id="subtotal"
                                         type="number"
-                                        className="pl-7 font-semibold"
+                                        className="pl-12 font-semibold"
                                         placeholder="0.00"
                                         value={subTotal || ""}
                                         onChange={handleSubTotalChange}
@@ -477,7 +477,7 @@ export default function AddRecord() {
 
                             <div className="rounded-lg bg-slate-100 dark:bg-slate-900 p-4 flex justify-between items-center">
                                 <span className="font-semibold">Total Payment:</span>
-                                <span className="text-xl font-bold tracking-tight">${totalPayment.toFixed(2)}</span>
+                                <span className="text-xl font-bold tracking-tight">LKR {totalPayment.toFixed(2)}</span>
                             </div>
 
                         </div>

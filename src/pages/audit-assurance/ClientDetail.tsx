@@ -162,25 +162,25 @@ export default function ClientDetail() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card className="shadow-sm border-slate-100 dark:border-slate-800">
                     <CardContent className="p-4 space-y-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">ID</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">ID</p>
                         <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono tracking-tight">{clientData.id}</p>
                     </CardContent>
                 </Card>
                 <Card className="shadow-sm border-slate-100 dark:border-slate-800">
                     <CardContent className="p-4 space-y-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Date</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Date</p>
                         <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{clientData.date}</p>
                     </CardContent>
                 </Card>
                 <Card className="shadow-sm border-slate-100 dark:border-slate-800">
                     <CardContent className="p-4 space-y-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Payment Option</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Payment Option</p>
                         <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{clientData.paymentOption}</p>
                     </CardContent>
                 </Card>
                 <Card className="shadow-sm border-slate-100 dark:border-slate-800">
                     <CardContent className="p-4 space-y-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Payment Status</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Payment Status</p>
                         <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{clientData.paymentStatus}</p>
                     </CardContent>
                 </Card>
@@ -325,7 +325,7 @@ export default function ClientDetail() {
                 </div>
             </div>
 
-            <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
+            <div className="pt-8 pb-6 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
                 <button
                     className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 order-2 md:order-1"
                     onClick={() => setHelpDialogOpen(true)}

@@ -89,7 +89,7 @@ export default function InternalAuditDashboard() {
     })
 
     const [currentPage, setCurrentPage] = useState(1)
-    const itemsPerPage = 12
+    const itemsPerPage = 10
     const totalPages = Math.ceil(filteredRecords.length / itemsPerPage)
     const startIndex = (currentPage - 1) * itemsPerPage
     const currentRecords = filteredRecords.slice(startIndex, startIndex + itemsPerPage)
@@ -341,7 +341,7 @@ export default function InternalAuditDashboard() {
                                         <StatusBadge status={record.paymentStatus} />
                                     </TableCell>
                                     <TableCell>
-                                        <Badge variant="outline" className="font-mono text-xs">{record.process || "-"}</Badge>
+                                        <Badge variant="outline" className="font-mono text-[13px] px-3 py-1 uppercase tracking-wider font-bold">{record.process || "-"}</Badge>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -380,7 +380,7 @@ export default function InternalAuditDashboard() {
                             Guide: Internal Audit Dashboard
                         </DialogTitle>
                         <DialogDescription>
-                            Overview of tools for tracking internal audit progress.
+                            Master the tools for tracking and managing internal audit records and assignments.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-6 py-4">
@@ -388,21 +388,45 @@ export default function InternalAuditDashboard() {
                             <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
                                 <h4 className="font-semibold text-sm flex items-center gap-2">
                                     <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">1</div>
-                                    Filter Controls
+                                    Advanced Filtering
                                 </h4>
-                                <p className="text-xs text-muted-foreground">
-                                    Narrow down audits by date, status, or specific internal process stage.
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Filter by Specific Date, Month, Year, or Period. Combine with Status and Process filters for precision.
                                 </p>
                             </div>
                             <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
                                 <h4 className="font-semibold text-sm flex items-center gap-2">
                                     <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">2</div>
-                                    Audit Tracking
+                                    Bulk Actions
                                 </h4>
-                                <p className="text-xs text-muted-foreground">
-                                    Monitor the 'Reporting' and 'Meeting Complete' stages for each client record.
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Select multiple records using the checkboxes to perform bulk deletion and management tasks.
                                 </p>
                             </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">3</div>
+                                    Internal Tracking
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Monitor the 'Reporting' and 'Meeting Complete' stages for each internal audit client record.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">4</div>
+                                    Real-time Search
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Instantly find any client by name or ID using the global search bar updated in real-time.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                            <h5 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Pro Tip</h5>
+                            <p className="text-xs leading-relaxed text-muted-foreground">
+                                Use the "Specific Period" filter to generate custom reports for any date range required by your firm.
+                            </p>
                         </div>
                     </div>
                     <DialogFooter>

@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
-import { Plus, X, UploadCloud, FileText, HelpCircle, Save, Calendar as CalendarIcon } from "lucide-react"
+import { Save, HelpCircle, Banknote, X, UploadCloud, Calendar as CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
+import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,7 +14,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { Separator } from "@/components/ui/separator"
-import { Card } from "@/components/ui/card"
 
 export default function InternalControlAddRecord() {
     const navigate = useNavigate()
@@ -28,6 +28,10 @@ export default function InternalControlAddRecord() {
     const [periodNumber, setPeriodNumber] = useState("")
     const [periodType, setPeriodType] = useState("Month")
     const [notes, setNotes] = useState("")
+    const [clientLogo, setClientLogo] = useState<string | null>(null)
+
+    // Refs
+    const logoInputRef = useRef<HTMLInputElement>(null)
 
     // Payment State
     const [subTotal, setSubTotal] = useState<number>(0)
@@ -43,6 +47,34 @@ export default function InternalControlAddRecord() {
     // Handlers
     const handleSave = () => navigate("/internal-control-outsourcing")
     const handleCancel = () => setDiscardConfirmation(true)
+
+    // Logo Handlers
+    const handleLogoSelect = (file: File) => {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                setClientLogo(reader.result as string)
+            }
+            reader.readAsDataURL(file)
+        }
+    }
+
+    const handleLogoInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) handleLogoSelect(file)
+    }
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+
+    const handleLogoDrop = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        const file = e.dataTransfer.files[0]
+        if (file) handleLogoSelect(file)
+    }
 
     return (
         <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500 pb-20 p-4 md:p-6">
@@ -64,22 +96,61 @@ export default function InternalControlAddRecord() {
                     <fieldset className="border border-slate-200 dark:border-slate-800 rounded-lg shadow-sm p-6 bg-card">
                         <legend className="px-2 text-sm font-medium">General</legend>
                         <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="id">ID</Label>
-                                    <Input id="id" value={id} onChange={(e) => setId(e.target.value)} placeholder="IC-XXX" />
+                            <div className="grid grid-cols-[1fr_200px] gap-4">
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="id">ID</Label>
+                                        <Input id="id" value={id} onChange={(e) => setId(e.target.value)} placeholder="IC-XXX" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Date</Label>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button variant="outline" className="w-full justify-start text-left font-normal h-10">
+                                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={date} onSelect={setDate} initialFocus /></PopoverContent>
+                                        </Popover>
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Date</Label>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <Button variant="outline" className="w-full justify-start text-left font-normal h-10">
-                                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                                {date ? format(date, "PPP") : <span>Pick a date</span>}
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={date} onSelect={setDate} initialFocus /></PopoverContent>
-                                    </Popover>
+
+                                {/* Logo Upload Area */}
+                                <div>
+                                    <Label>Client Logo (Optional)</Label>
+                                    <input
+                                        ref={logoInputRef}
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleLogoInputChange}
+                                    />
+                                    <div
+                                        className="mt-2 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors w-[200px] h-[120px] relative overflow-hidden"
+                                        onClick={() => logoInputRef.current?.click()}
+                                        onDragOver={handleDragOver}
+                                        onDrop={handleLogoDrop}
+                                    >
+                                        {clientLogo ? (
+                                            <>
+                                                <img src={clientLogo} alt="Client logo" className="max-h-full max-w-full object-contain p-2" />
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="absolute top-1 right-1 h-5 w-5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-destructive hover:text-destructive-foreground"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        setClientLogo(null)
+                                                    }}
+                                                >
+                                                    <X className="h-3 w-3" />
+                                                </Button>
+                                            </>
+                                        ) : (
+                                            <UploadCloud className="h-8 w-8 text-muted-foreground" />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                             <div className="space-y-2">
@@ -135,8 +206,8 @@ export default function InternalControlAddRecord() {
                             <div className="space-y-2">
                                 <Label htmlFor="subtotal">Sub Total</Label>
                                 <div className="relative">
-                                    <span className="absolute left-3 inset-y-0 flex items-center text-muted-foreground">$</span>
-                                    <Input id="subtotal" type="number" className="pl-7 font-semibold h-10" value={subTotal || ""} onChange={(e) => setSubTotal(Number(e.target.value))} />
+                                    <span className="absolute left-3 inset-y-0 flex items-center text-muted-foreground text-sm font-bold">LKR</span>
+                                    <Input id="subtotal" type="number" className="pl-12 font-semibold h-10" value={subTotal || ""} onChange={(e) => setSubTotal(Number(e.target.value))} placeholder="0.00" />
                                 </div>
                             </div>
 
@@ -149,26 +220,59 @@ export default function InternalControlAddRecord() {
                                 </RadioGroup>
                             </div>
 
+                            {/* Issue Cheque Sub-form */}
                             {paymentOption === "Cheque" && (
-                                <Card className="bg-muted/30 p-4 space-y-4 border shadow-none animate-in fade-in slide-in-from-top-2 duration-300">
-                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">Issue Cheque</h4>
+                                <div className="border border-blue-100 bg-blue-50/50 dark:bg-blue-900/20 dark:border-blue-900 rounded-md p-4 space-y-4 animate-in fade-in slide-in-from-top-2">
+                                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-2">
+                                        <Banknote className="h-5 w-5" />
+                                        <h4 className="font-medium text-sm">Issue Cheque Details</h4>
+                                    </div>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2"><Label className="text-[11px] font-bold">Cheque Number</Label><Input placeholder="000123" className="h-9" /></div>
-                                        <div className="space-y-2"><Label className="text-[11px] font-bold">Date</Label><Input type="date" className="h-9" /></div>
-                                        <div className="space-y-2"><Label className="text-[11px] font-bold">Amount</Label><Input type="number" className="h-9" /></div>
                                         <div className="space-y-2">
-                                            <Label className="text-[11px] font-bold">Status</Label>
-                                            <Select defaultValue="Pending">
-                                                <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                                            <Label htmlFor="cq-num">Cheque Number</Label>
+                                            <Input id="cq-num" placeholder="Enter cheque number" className="bg-white dark:bg-slate-950" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Date</Label>
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        className={cn(
+                                                            "w-full justify-start text-left font-normal",
+                                                            !date && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0">
+                                                    <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                                                </PopoverContent>
+                                            </Popover>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="cq-amount">Amount</Label>
+                                            <Input id="cq-amount" type="number" className="bg-white dark:bg-slate-950" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="cq-status">Status</Label>
+                                            <Select>
+                                                <SelectTrigger className="bg-white dark:bg-slate-950">
+                                                    <SelectValue placeholder="Status" />
+                                                </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="Pending">Pending</SelectItem>
-                                                    <SelectItem value="Cleared">Cleared</SelectItem>
-                                                    <SelectItem value="Return">Return</SelectItem>
+                                                    <SelectItem value="pending">Pending</SelectItem>
+                                                    <SelectItem value="cleared">Cleared</SelectItem>
+                                                    <SelectItem value="return">Return</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
                                     </div>
-                                </Card>
+                                </div>
                             )}
 
                             <div className="space-y-3">
@@ -180,29 +284,47 @@ export default function InternalControlAddRecord() {
                                 </RadioGroup>
                             </div>
 
+                            {/* Partial Payment Logic */}
                             {paymentStatus === "Partial" && (
-                                <Card className="bg-amber-50 dark:bg-amber-900/10 p-4 border shadow-none animate-in fade-in slide-in-from-top-2 duration-300">
-                                    <h4 className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-500 mb-3">Partial Payment</h4>
+                                <div className="border border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800 rounded-md p-4 space-y-4 animate-in fade-in slide-in-from-top-2">
                                     <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2"><Label className="text-[11px] font-bold">Paid Amount</Label><Input type="number" value={partialAmount || ""} onChange={(e) => setPartialAmount(Number(e.target.value))} className="h-9 bg-background" /></div>
-                                        <div className="space-y-2"><Label className="text-[11px] font-bold">Remaining Amount</Label><Input value={`$${balance.toFixed(2)}`} disabled className="h-9 font-bold bg-muted/50" /></div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="part-amount">Paid Amount</Label>
+                                            <Input
+                                                id="part-amount"
+                                                type="number"
+                                                value={partialAmount || ""}
+                                                onChange={(e) => setPartialAmount(Number(e.target.value))}
+                                                className="bg-white dark:bg-slate-950"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="balance">Balance Due</Label>
+                                            <Input
+                                                id="balance"
+                                                value={balance.toFixed(2)}
+                                                disabled
+                                                className="bg-white/50 dark:bg-slate-950 font-semibold text-red-600"
+                                            />
+                                        </div>
                                     </div>
-                                </Card>
+                                </div>
                             )}
 
                             <div className="space-y-2">
                                 <Label htmlFor="discount">Discount</Label>
                                 <div className="relative">
-                                    <span className="absolute left-3 inset-y-0 flex items-center text-muted-foreground">$</span>
-                                    <Input id="discount" type="number" className="pl-7 h-10" value={discount || ""} onChange={(e) => setDiscount(Number(e.target.value))} />
+                                    <span className="absolute left-3 inset-y-0 flex items-center text-muted-foreground text-sm font-bold"></span>
+                                    <Input id="discount" type="number" className="pl-12 h-10" value={discount || ""} onChange={(e) => setDiscount(Number(e.target.value))} />
                                 </div>
                             </div>
 
                             <Separator />
 
-                            <div className="p-4 bg-slate-900 dark:bg-slate-100 rounded-lg flex justify-between items-center text-white dark:text-slate-900 shadow-inner">
-                                <span className="font-bold text-sm tracking-wide">TOTAL PAYMENT</span>
-                                <span className="text-2xl font-black italic tracking-tighter">${totalPayment.toFixed(2)}</span>
+                            <div className="rounded-lg bg-slate-100 dark:bg-slate-900 p-4 flex justify-between items-center">
+                                <span className="font-semibold">Total Payment:</span>
+                                <span className="text-xl font-bold tracking-tight">LKR {totalPayment.toFixed(2)}</span>
                             </div>
                         </div>
                     </fieldset>
@@ -211,7 +333,7 @@ export default function InternalControlAddRecord() {
 
             <div className="mt-8 pt-4 border-t flex items-center justify-between">
                 <button
-                    className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 group transition-colors italic"
+                    className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 group transition-colors"
                     onClick={() => setLearnMoreOpen(true)}
                 >
                     <HelpCircle className="size-4 group-hover:text-primary transition-colors" /> Learn more about Add Record
@@ -220,21 +342,65 @@ export default function InternalControlAddRecord() {
 
             {/* Dialogs */}
             <Dialog open={learnMoreOpen} onOpenChange={setLearnMoreOpen}>
-                <DialogContent className="sm:max-w-[550px]">
+                <DialogContent className="max-w-2xl">
                     <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2 italic text-primary"><HelpCircle className="h-5 w-5" /> User Guide: Add Record</DialogTitle>
-                        <DialogDescription>Instructions for Internal Control Systems & Outsourcing Form</DialogDescription>
+                        <DialogTitle className="flex items-center gap-2 text-xl">
+                            <HelpCircle className="h-6 w-6 text-primary" />
+                            Guide: Add Internal Control Record
+                        </DialogTitle>
+                        <DialogDescription>
+                            Follow these steps to ensure all control audit data is captured accurately.
+                        </DialogDescription>
                     </DialogHeader>
-                    <div className="py-4 space-y-4 text-sm text-muted-foreground">
-                        <div className="bg-muted/30 p-3 rounded-lg border border-dashed">
-                            <h4 className="font-bold text-foreground mb-2">General Details</h4>
-                            <p>Fill in the assignment details and specify the period (Date, Month, or Year) associated with this record.</p>
+                    <div className="space-y-6 py-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">1</div>
+                                    General Details
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Capture client identity and basic assignment details. Specify the period associated with this record.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">2</div>
+                                    Assignment Specs
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Define the assignment name and process requirements for the internal control audit or outsourcing project.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">3</div>
+                                    Payment Summary
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Select payment options. For cheque or partial payments, the system provides real-time balance tracking and bank detail entry.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">4</div>
+                                    Review & Save
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Once all fields are verified, save the record to initialize the 'Reporting' stage of the internal control process.
+                                </p>
+                            </div>
                         </div>
-                        <div className="bg-muted/30 p-3 rounded-lg border border-dashed">
-                            <h4 className="font-bold text-foreground mb-2">Payment Summery</h4>
-                            <p>Select the payment option. If 'Cheque' is selected, provide the necessary details. For 'Partial' payments, the balance is auto-calculated based on the sub-total.</p>
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                            <h5 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Pro Tip</h5>
+                            <p className="text-xs leading-relaxed text-muted-foreground">
+                                Use the "Partial" payment status to auto-calculate the balance due based on the sub-total and paid amount entered.
+                            </p>
                         </div>
                     </div>
+                    <DialogFooter>
+                        <Button onClick={() => setLearnMoreOpen(false)}>Got it, thanks!</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 

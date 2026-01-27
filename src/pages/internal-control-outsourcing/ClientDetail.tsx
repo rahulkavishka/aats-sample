@@ -1,17 +1,19 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { Download, Printer, Edit, Trash2, CheckCircle, HelpCircle, LayoutGrid, FileText } from "lucide-react"
+import { Download, Printer, Edit, Trash2, CheckCircle, HelpCircle, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
+
+import { internalControlRecords } from "@/data/internal-control-outsourcing/records"
 
 const processes = ["Reporting", "Meeting Complete"]
 
 export default function InternalControlClientDetail() {
     const { id } = useParams()
     const navigate = useNavigate()
-    const [currentProcess, setCurrentProcess] = useState("")
+    const [currentProcess, setCurrentProcess] = useState(internalControlRecords.find(r => r.id === id)?.process || "")
     const [confirmProcessOpen, setConfirmProcessOpen] = useState(false)
     const [targetProcess, setTargetProcess] = useState("")
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -19,14 +21,18 @@ export default function InternalControlClientDetail() {
     const [alertOpen, setAlertOpen] = useState(false)
     const [alertMessage, setAlertMessage] = useState("")
 
-    // Mock data based on record ID
+    // Find the record or use default
+    const record = internalControlRecords.find(r => r.id === id) || internalControlRecords[0]
+
     const clientData = {
-        id: id || "IC-001",
-        clientName: "Alpha Manufacturing",
-        date: "2024-03-10",
-        paymentOption: "Online",
-        paymentStatus: "Paid",
-        assignment: "Full scope internal control audit for manufacturing and inventory management systems. This involves evaluating current policies, identifying gaps, and providing recommendations for process improvements to enhance operational efficiency and mitigate risks.",
+        id: record.id,
+        clientName: record.clientName,
+        date: record.date,
+        paymentOption: record.paymentOption,
+        paymentStatus: record.paymentStatus,
+        assignment: record.assignment || "Full scope internal control audit for manufacturing and inventory management systems. This involves evaluating current policies, identifying gaps, and providing recommendations for process improvements to enhance operational efficiency and mitigate risks.",
+        period: record.periodNumber && record.periodType ? `${record.periodNumber} ${record.periodType}` : "N/A",
+        logo: null
     }
 
     const getCurrentStepIndex = () => processes.indexOf(currentProcess)
@@ -62,140 +68,216 @@ export default function InternalControlClientDetail() {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-6 p-4 md:p-6 animate-in slide-in-from-right-4 duration-500 pb-20">
-            {/* Header */}
+        <div className="flex flex-col h-full space-y-6 p-4 md:p-6 animate-in slide-in-from-right-4 duration-500">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                    <div className="size-12 rounded-xl bg-orange-100 dark:bg-orange-950/20 flex items-center justify-center text-orange-600 shadow-sm ring-1 ring-orange-200">
-                        <LayoutGrid className="size-7" />
+                    <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm ring-1 ring-primary/20">
+                        {clientData.logo ? <img src={clientData.logo} alt="" className="size-8 object-contain" /> : <Building2 className="size-7" />}
                     </div>
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{clientData.clientName}</h1>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="h-9 px-4 gap-2 border-slate-200 hover:bg-slate-50">
-                        <Download className="h-4 w-4" /> Download
-                    </Button>
-                    <Button variant="outline" size="sm" className="h-9 px-4 gap-2 border-slate-200 hover:bg-slate-50">
-                        <Printer className="h-4 w-4" /> Print
-                    </Button>
+                    <Button variant="outline" size="sm"><Download className="mr-2 h-4 w-4" /> Download</Button>
+                    <Button variant="outline" size="sm"><Printer className="mr-2 h-4 w-4" /> Print</Button>
                 </div>
             </div>
 
-            {/* Core Info Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                    { label: "ID & Date", value: `${clientData.id} • ${clientData.date}`, mono: true },
-                    { label: "Payment Option", value: clientData.paymentOption },
-                    { label: "Payment Status", value: clientData.paymentStatus, status: true }
-                ].map((item, i) => (
-                    <Card key={i} className="shadow-sm border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow">
-                        <CardContent className="p-4 space-y-1">
-                            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.1em]">{item.label}</p>
-                            <p className={cn(
-                                "text-lg font-bold tracking-tight",
-                                item.mono && "font-mono text-primary",
-                                !item.mono && "text-slate-900 dark:text-slate-100"
-                            )}>
-                                {item.value}
-                            </p>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-
-            {/* Assignment */}
-            <div className="space-y-3">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Assignment</h3>
-                <Card className="bg-muted/10 border-dashed border-2">
-                    <CardContent className="p-6">
-                        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300 italic">"{clientData.assignment}"</p>
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                <Card className="shadow-sm border-slate-100 dark:border-slate-800">
+                    <CardContent className="p-4 space-y-1">
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">ID</p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-slate-100 font-mono tracking-tight">{clientData.id}</p>
+                    </CardContent>
+                </Card>
+                <Card className="shadow-sm border-slate-100 dark:border-slate-800">
+                    <CardContent className="p-4 space-y-1">
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Date</p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{clientData.date}</p>
+                    </CardContent>
+                </Card>
+                <Card className="shadow-sm border-slate-100 dark:border-slate-800">
+                    <CardContent className="p-4 space-y-1">
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Period</p>
+                        <p className="text-xl font-bold text-primary">{clientData.period}</p>
+                    </CardContent>
+                </Card>
+                <Card className="shadow-sm border-slate-100 dark:border-slate-800">
+                    <CardContent className="p-4 space-y-1">
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Payment Option</p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{clientData.paymentOption}</p>
+                    </CardContent>
+                </Card>
+                <Card className="shadow-sm border-slate-100 dark:border-slate-800">
+                    <CardContent className="p-4 space-y-1">
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Payment Status</p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{clientData.paymentStatus}</p>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Process Stepper */}
-            <div className="space-y-4 pt-4">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Process Workflow</h3>
-                <div className="relative flex flex-row gap-x-0 overflow-x-auto py-8 px-4 bg-muted/20 rounded-2xl border-2 border-slate-100 dark:border-slate-800/50 justify-between md:justify-center">
+            <div>
+                <h3 className="text-lg font-semibold mb-2">Assignment</h3>
+                <Card>
+                    <CardContent className="p-4">
+                        <p className="text-sm leading-relaxed">{clientData.assignment}</p>
+                    </CardContent>
+                </Card>
+            </div>
+
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-center md:text-left">Process</h3>
+                <ul className="relative flex flex-row gap-x-0 overflow-x-auto py-2 px-4 bg-muted/10 rounded-xl border border-dashed border-muted/50 justify-between md:justify-center">
                     {processes.map((step, idx) => {
                         const status = getProcessStatus(step)
+
                         return (
-                            <div key={step} className="shrink basis-0 flex-1 group cursor-pointer" onClick={() => handleStepClick(step)}>
-                                <div className="min-w-14 min-h-14 w-full flex items-center text-xs align-middle">
-                                    <div className={cn("w-full h-[3px] flex-1 transition-colors duration-500", status === "completed" ? "bg-green-500" : "bg-slate-200 dark:bg-neutral-700", idx === 0 && "invisible")}></div>
+                            <li key={step} className="shrink basis-0 flex-1 group cursor-pointer" onClick={() => handleStepClick(step)}>
+                                <div className="min-w-10 min-h-10 w-full flex items-center text-xs align-middle">
+                                    <div className={cn(
+                                        "w-full h-px flex-1 bg-gray-200 dark:bg-neutral-700",
+                                        status === "completed" ? "bg-green-600" : "bg-gray-200",
+                                        idx === 0 && "invisible"
+                                    )}></div>
                                     <span className={cn(
-                                        "size-14 flex justify-center items-center shrink-0 font-bold rounded-full transition-all duration-300 relative z-10 mx-auto border-4",
-                                        status === "completed" ? "bg-green-500 text-white border-green-200" :
-                                            status === "current" ? "bg-blue-600 text-white border-blue-100 animate-pulse shadow-lg shadow-blue-200" :
-                                                "bg-slate-100 text-slate-400 border-white dark:bg-neutral-800 dark:border-neutral-700"
+                                        "size-10 flex justify-center items-center shrink-0 font-medium rounded-full transition-colors text-sm relative z-10 mx-auto",
+                                        status === "completed" ? "bg-green-600 text-white" :
+                                            status === "current" ? "bg-blue-600 text-white ring-4 ring-blue-100 dark:ring-blue-900/30" :
+                                                "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white"
                                     )}>
-                                        {status === "completed" ? <CheckCircle className="size-7" /> : idx + 1}
+                                        {status === "completed" ? <CheckCircle className="h-5 w-5" /> : idx + 1}
                                     </span>
-                                    <div className={cn("w-full h-[3px] flex-1 transition-colors duration-500", status === "completed" ? "bg-green-500" : "bg-slate-200 dark:bg-neutral-700", idx === processes.length - 1 && "invisible")}></div>
+                                    <div className={cn(
+                                        "w-full h-px flex-1 bg-gray-200 dark:bg-neutral-700",
+                                        status === "completed" ? "bg-green-600" : "bg-gray-200",
+                                        idx === processes.length - 1 && "invisible"
+                                    )}></div>
                                 </div>
-                                <div className="mt-4 text-center">
-                                    <span className={cn("text-xs font-bold transition-all duration-300 uppercase tracking-wide", status === "upcoming" ? "text-muted-foreground opacity-50" : "text-foreground group-hover:text-primary")}>{step}</span>
+                                <div className="mt-3 text-center">
+                                    <span className={cn(
+                                        "block text-sm font-medium transition-colors",
+                                        status === "upcoming" ? "text-muted-foreground" : "text-gray-800 dark:text-white"
+                                    )}>
+                                        {step}
+                                    </span>
                                 </div>
-                            </div>
+                            </li>
                         )
                     })}
-                </div>
+                </ul>
             </div>
 
-            {/* Footer Actions */}
-            <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
-                <button className="text-sm font-semibold text-muted-foreground hover:text-primary flex items-center gap-1.5 transition-colors" onClick={() => setHelpDialogOpen(true)}>
-                    <HelpCircle className="h-4.5 w-4.5" /> Learn more about Client Page
+            <div className="pt-8 pb-6 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
+                <button className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 order-2 md:order-1" onClick={() => setHelpDialogOpen(true)}>
+                    <HelpCircle className="h-4 w-4" /> Learn more about Client Page
                 </button>
-                <div className="flex gap-3">
-                    <Button variant="outline" className="gap-2 h-10 px-5 font-semibold" onClick={() => navigate("/internal-control-outsourcing/new")}>
-                        <Edit className="h-4 w-4 text-blue-600" /> Edit Record
+                <div className="flex gap-2 order-1 md:order-2">
+                    <Button variant="outline" size="sm" onClick={() => navigate("/internal-control-outsourcing/new")}>
+                        <Edit className="mr-2 h-4 w-4 text-muted-foreground" /> Edit
                     </Button>
-                    <Button variant="destructive" className="gap-2 h-10 px-5 font-semibold shadow-lg shadow-destructive/20" onClick={() => setDeleteDialogOpen(true)}>
-                        <Trash2 className="h-4 w-4" /> Delete Record
+                    <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
+                        <Trash2 className="mr-2 h-4 w-4" /> Delete
                     </Button>
                 </div>
             </div>
 
-            {/* Dialogs */}
             <Dialog open={confirmProcessOpen} onOpenChange={setConfirmProcessOpen}>
                 <DialogContent>
-                    <DialogHeader><DialogTitle className="text-xl">Mark as Complete?</DialogTitle><DialogDescription className="text-base pt-2">Are you sure you want to mark <strong>{targetProcess}</strong> as complete? This action cannot be undone.</DialogDescription></DialogHeader>
-                    <DialogFooter className="gap-3 pt-4"><Button variant="outline" onClick={() => setConfirmProcessOpen(false)} className="px-6">Cancel</Button><Button onClick={confirmStep} className="px-6 shadow-md">Confirm</Button></DialogFooter>
+                    <DialogHeader>
+                        <DialogTitle>Complete Step?</DialogTitle>
+                        <DialogDescription>Mark <strong>{targetProcess}</strong> as complete?</DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setConfirmProcessOpen(false)}>Cancel</Button>
+                        <Button onClick={confirmStep}>Confirm</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 
             <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                 <DialogContent>
-                    <DialogHeader><DialogTitle className="text-destructive text-xl">Confirm Deletion</DialogTitle><DialogDescription className="text-base pt-2">Are you sure you want to permanently delete this internal control record? This will remove all associated data.</DialogDescription></DialogHeader>
-                    <DialogFooter className="gap-3 pt-4"><Button variant="outline" onClick={() => setDeleteDialogOpen(false)} className="px-6">Cancel</Button><Button variant="destructive" onClick={() => navigate("/internal-control-outsourcing")} className="px-6 shadow-md">Delete Forever</Button></DialogFooter>
+                    <DialogHeader>
+                        <DialogTitle>Delete Record</DialogTitle>
+                        <DialogDescription>Are you sure you want to delete this record?</DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+                        <Button variant="destructive" onClick={() => navigate("/internal-control-outsourcing")}>Delete</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 
             <Dialog open={alertOpen} onOpenChange={setAlertOpen}>
                 <DialogContent className="sm:max-w-md">
-                    <DialogHeader><DialogTitle className="text-center text-amber-600">Sequential Required</DialogTitle><DialogDescription className="text-center pt-2 text-base">{alertMessage}</DialogDescription></DialogHeader>
-                    <DialogFooter className="sm:justify-center pt-4"><Button onClick={() => setAlertOpen(false)} className="px-8 shadow-sm">I Understand</Button></DialogFooter>
+                    <DialogHeader>
+                        <DialogTitle className="text-center">System Alert</DialogTitle>
+                        <DialogDescription className="text-center">{alertMessage}</DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="sm:justify-center">
+                        <Button onClick={() => setAlertOpen(false)}>OK</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 
             <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
-                <DialogContent className="max-w-xl">
-                    <DialogHeader><DialogTitle className="flex items-center gap-2 text-xl italic"><HelpCircle className="h-6 w-6 text-primary" /> Internal Control Guide</DialogTitle></DialogHeader>
-                    <div className="py-2 text-sm text-muted-foreground space-y-4">
-                        <p>Track the progress of internal control audits and outsourcing engagements through a structured workflow:</p>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-xl">
+                            <HelpCircle className="h-6 w-6 text-primary" />
+                            Guide: Managing Client Details
+                        </DialogTitle>
+                        <DialogDescription>
+                            Everything you need to know about the Client Detail view and workflow.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-6 py-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="bg-muted/30 p-3 rounded-lg border border-dashed border-slate-200">
-                                <h4 className="font-bold text-slate-800 mb-1">1. Reporting</h4>
-                                <p>Preparation and submission of the internal control report.</p>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">1</div>
+                                    Engagement Summary
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Quickly view essential engagement details like Assignment ID, Period, and Payment status at a glance.
+                                </p>
                             </div>
-                            <div className="bg-muted/30 p-3 rounded-lg border border-dashed border-slate-200">
-                                <h4 className="font-bold text-slate-800 mb-1">2. Meeting Complete</h4>
-                                <p>Finalization of findings with the client via a closing meeting.</p>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">2</div>
+                                    Workflow Stepper
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Follow the linear workflow processes from initial Reporting to Meeting Completion stages.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">3</div>
+                                    Record Lifecycle
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Track progress indicators. Completed stages are marked in green, while upcoming ones remain in a neutral state.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">4</div>
+                                    Manage Records
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Use the Edit and Delete buttons at the bottom to modify assignment details or permanently remove the client record.
+                                </p>
                             </div>
                         </div>
-                        <p className="italic bg-amber-50 p-2 rounded border border-amber-100 text-amber-800 text-[11px] font-bold">RECORDS MUST BE UPDATED IN SEQUENTIAL ORDER. UNAUTHORIZED SKIPPING IS PREVENTED.</p>
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                            <h5 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Pro Tip</h5>
+                            <p className="text-xs leading-relaxed text-muted-foreground">
+                                Completing steps in order ensures engagement integrity. Detailed assignment notes help in better tracking during the audit lifecycle.
+                            </p>
+                        </div>
                     </div>
+                    <DialogFooter>
+                        <Button onClick={() => setHelpDialogOpen(false)}>Got it, thanks!</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>

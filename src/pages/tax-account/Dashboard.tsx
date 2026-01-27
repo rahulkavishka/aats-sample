@@ -57,7 +57,7 @@ export default function TaxAccountDashboard() {
     })
 
     const [currentPage, setCurrentPage] = useState(1)
-    const itemsPerPage = 12
+    const itemsPerPage = 10
     const totalPages = Math.ceil(filteredRecords.length / itemsPerPage)
     const currentRecords = filteredRecords.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
@@ -166,7 +166,7 @@ export default function TaxAccountDashboard() {
                                 <TableCell className="whitespace-nowrap">{format(new Date(record.date), "dd/MM/yyyy")}</TableCell>
                                 <TableCell className="font-semibold text-slate-900">{record.clientName}</TableCell>
                                 <TableCell><StatusBadge status={record.paymentStatus} /></TableCell>
-                                <TableCell><Badge variant="outline" className="font-mono text-xs">{record.process || "-"}</Badge></TableCell>
+                                <TableCell><Badge variant="outline" className="font-mono text-[13px] px-3 py-1 uppercase tracking-wider font-bold">{record.process || "-"}</Badge></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -188,18 +188,64 @@ export default function TaxAccountDashboard() {
 
             <Dialog open={learnMoreOpen} onOpenChange={setLearnMoreOpen}>
                 <DialogContent className="max-w-2xl">
-                    <DialogHeader><DialogTitle className="flex items-center gap-2 text-xl"><HelpCircle className="h-6 w-6 text-primary" /> Guide: Tax Account Dashboard</DialogTitle></DialogHeader>
-                    <div className="py-4 space-y-4 text-sm text-muted-foreground">
-                        <p>Complete processes linearly from Bookkeeping to Final Submission.</p>
-                        <ul className="list-disc pl-5 space-y-2">
-                            <li><strong>Bookkeep:</strong> Basic data entry.</li>
-                            <li><strong>Tax Amount:</strong> Calculation of tax liabilities.</li>
-                            <li><strong>Finalize:</strong> Final review of calculations.</li>
-                            <li><strong>Tax Paid:</strong> Recording the tax payment.</li>
-                            <li><strong>Submit:</strong> Final submission to authorities.</li>
-                        </ul>
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-xl">
+                            <HelpCircle className="h-6 w-6 text-primary" />
+                            Guide: Tax Account Dashboard
+                        </DialogTitle>
+                        <DialogDescription>
+                            Master the tools for tracking and managing tax records and compliance.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-6 py-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">1</div>
+                                    Advanced Filtering
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Filter by Specific Date, Month, Year, or Period. Combine with Status and Process filters for precision.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">2</div>
+                                    Bulk Actions
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Select multiple records using the checkboxes to perform bulk deletion and management tasks.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">3</div>
+                                    Compliance Workflow
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Track records through the 5-stage compliance process from Bookkeeping to Final Submission.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">4</div>
+                                    Real-time Search
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Instantly find any client by name or ID using the global search bar updated in real-time.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                            <h5 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Pro Tip</h5>
+                            <p className="text-xs leading-relaxed text-muted-foreground">
+                                Use the "Specific Period" filter to generate custom reports for any date range required by your firm.
+                            </p>
+                        </div>
                     </div>
-                    <DialogFooter><Button onClick={() => setLearnMoreOpen(false)}>Close</Button></DialogFooter>
+                    <DialogFooter>
+                        <Button onClick={() => setLearnMoreOpen(false)}>Got it, thanks!</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 

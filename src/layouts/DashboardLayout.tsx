@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Outlet, useLocation, Link } from "react-router-dom"
-import { ChevronDown, ChevronRight, LayoutDashboard, FileText, ChevronLeft } from "lucide-react"
+import { ChevronDown, ChevronRight, LayoutDashboard, ChevronLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function DashboardLayout() {
@@ -51,7 +51,6 @@ export default function DashboardLayout() {
                                                 : "text-muted-foreground"
                                         )}
                                     >
-                                        <FileText className="h-4 w-4" />
                                         Audit & Assurance
                                     </Link>
                                     <Link
@@ -63,7 +62,6 @@ export default function DashboardLayout() {
                                                 : "text-muted-foreground"
                                         )}
                                     >
-                                        <FileText className="h-4 w-4" />
                                         Internal Audit
                                     </Link>
                                     <Link
@@ -75,7 +73,6 @@ export default function DashboardLayout() {
                                                 : "text-muted-foreground"
                                         )}
                                     >
-                                        <FileText className="h-4 w-4" />
                                         Forensic Audit
                                     </Link>
                                     <Link
@@ -87,7 +84,6 @@ export default function DashboardLayout() {
                                                 : "text-muted-foreground"
                                         )}
                                     >
-                                        <FileText className="h-4 w-4" />
                                         Management Account
                                     </Link>
                                     <Link
@@ -99,7 +95,6 @@ export default function DashboardLayout() {
                                                 : "text-muted-foreground"
                                         )}
                                     >
-                                        <FileText className="h-4 w-4" />
                                         Tax Account
                                     </Link>
                                     <Link
@@ -111,7 +106,6 @@ export default function DashboardLayout() {
                                                 : "text-muted-foreground"
                                         )}
                                     >
-                                        <FileText className="h-4 w-4" />
                                         Internal Control Systems & Outsourcing
                                     </Link>
                                 </div>

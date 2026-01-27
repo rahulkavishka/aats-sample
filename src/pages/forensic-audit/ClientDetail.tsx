@@ -4,6 +4,7 @@ import { Download, Printer, Edit, Trash2, CheckCircle, HelpCircle, Building2 } f
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import { forensicAuditRecords } from "@/data/forensic-audit/records"
 import { cn } from "@/lib/utils"
 
 const processes = ["Reporting", "Meeting Complete"]
@@ -19,13 +20,17 @@ export default function ForensicAuditClientDetail() {
     const [alertOpen, setAlertOpen] = useState(false)
     const [alertMessage, setAlertMessage] = useState("")
 
+    // Find the record or use default
+    const record = forensicAuditRecords.find(r => r.id === id) || forensicAuditRecords[0]
+
     const clientData = {
-        id: id || "FA-001",
-        clientName: "Titan Industries",
-        date: "2024-01-20",
-        paymentOption: "Online",
-        paymentStatus: "Paid",
-        assignment: "Fraud investigation for manufacturing division. Complete forensic analysis of procurement records and internal expense reports.",
+        id: record.id,
+        clientName: record.clientName,
+        date: record.date,
+        paymentOption: "Online", // Mocked
+        paymentStatus: record.paymentStatus,
+        assignment: record.assignment || "Fraud investigation for manufacturing division. Complete forensic analysis of procurement records and internal expense reports.",
+        period: record.periodNumber && record.periodType ? `${record.periodNumber} ${record.periodType}` : "N/A",
         logo: null
     }
 
@@ -62,7 +67,11 @@ export default function ForensicAuditClientDetail() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                     <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm ring-1 ring-primary/20">
-                        <Building2 className="size-7" />
+                        {clientData.logo ? (
+                            <img src={clientData.logo} alt={clientData.clientName} className="size-8 object-contain" />
+                        ) : (
+                            <Building2 className="size-7" />
+                        )}
                     </div>
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{clientData.clientName}</h1>
                 </div>
@@ -73,29 +82,35 @@ export default function ForensicAuditClientDetail() {
             </div>
 
             {/* Info Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 <Card className="shadow-sm border-slate-100 dark:border-slate-800">
                     <CardContent className="p-4 space-y-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">ID</p>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-mono tracking-tight">{clientData.id}</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">ID</p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-slate-100 font-mono tracking-tight">{clientData.id}</p>
                     </CardContent>
                 </Card>
                 <Card className="shadow-sm border-slate-100 dark:border-slate-800">
                     <CardContent className="p-4 space-y-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Date</p>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{clientData.date}</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Date</p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{clientData.date}</p>
                     </CardContent>
                 </Card>
                 <Card className="shadow-sm border-slate-100 dark:border-slate-800">
                     <CardContent className="p-4 space-y-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Payment Option</p>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{clientData.paymentOption}</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Period</p>
+                        <p className="text-xl font-bold text-primary">{clientData.period}</p>
                     </CardContent>
                 </Card>
                 <Card className="shadow-sm border-slate-100 dark:border-slate-800">
                     <CardContent className="p-4 space-y-1">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Payment Status</p>
-                        <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{clientData.paymentStatus}</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Payment Option</p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{clientData.paymentOption}</p>
+                    </CardContent>
+                </Card>
+                <Card className="shadow-sm border-slate-100 dark:border-slate-800">
+                    <CardContent className="p-4 space-y-1">
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Payment Status</p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{clientData.paymentStatus}</p>
                     </CardContent>
                 </Card>
             </div>
@@ -148,7 +163,7 @@ export default function ForensicAuditClientDetail() {
             </div>
 
             {/* Footer Actions */}
-            <div className="pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
+            <div className="pt-8 pb-6 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
                 <button className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 order-2 md:order-1" onClick={() => setHelpDialogOpen(true)}>
                     <HelpCircle className="h-4 w-4" /> Learn more about Client Page
                 </button>
@@ -190,12 +205,65 @@ export default function ForensicAuditClientDetail() {
             </Dialog>
 
             <Dialog open={helpDialogOpen} onOpenChange={setHelpDialogOpen}>
-                <DialogContent className="max-w-xl">
-                    <DialogHeader><DialogTitle>Forensic Audit Guide</DialogTitle></DialogHeader>
-                    <div className="py-2 text-sm text-muted-foreground space-y-2">
-                        <p>1. Track identification through summary cards.</p>
-                        <p>2. Complete the mandatory 2-stage verification process.</p>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-xl">
+                            <HelpCircle className="h-6 w-6 text-primary" />
+                            Guide: Managing Forensic Details
+                        </DialogTitle>
+                        <DialogDescription>
+                            Everything you need to know about the Forensic Client view and investigative workflow.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-6 py-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">1</div>
+                                    Investigative Summary
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Quickly view essential investigative details like Assignment ID, Period, and Payment status at a glance.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">2</div>
+                                    Verification Stepper
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Follow the mandatory 2-stage verification process from Reporting to final Meeting Completion.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">3</div>
+                                    Evidence Tracking
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Track progress indicators. Completed stages are marked in green, ensuring a clear audit trail for the investigation.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">4</div>
+                                    Manage Records
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Use the Edit and Delete buttons at the bottom to modify details or permanently remove the forensic record.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                            <h5 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Pro Tip</h5>
+                            <p className="text-xs leading-relaxed text-muted-foreground">
+                                Precision is key in forensic audits. Detailed assignment names help in establishing a rock-solid investigative chain of custody.
+                            </p>
+                        </div>
                     </div>
+                    <DialogFooter>
+                        <Button onClick={() => setHelpDialogOpen(false)}>Got it, thanks!</Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
             <Dialog open={alertOpen} onOpenChange={setAlertOpen}>

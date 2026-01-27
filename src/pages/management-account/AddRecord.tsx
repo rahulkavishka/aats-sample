@@ -1,7 +1,8 @@
 import { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
-import { Plus, X, UploadCloud, FileText, HelpCircle, Save, Calendar as CalendarIcon } from "lucide-react"
+import { Plus, X, UploadCloud, FileText, HelpCircle, Save, Banknote, Calendar as CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
+import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,7 +14,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { Separator } from "@/components/ui/separator"
-import { Card } from "@/components/ui/card"
 
 
 export default function ManagementAccountAddRecord() {
@@ -25,12 +25,14 @@ export default function ManagementAccountAddRecord() {
     // Form State
     const [date, setDate] = useState<Date | undefined>(new Date())
     const [sourceDocs, setSourceDocs] = useState<{ name: string, description: string, date: string }[]>([])
+    const [clientLogo, setClientLogo] = useState<string | null>(null)
     const [tempDocName, setTempDocName] = useState("")
     const [tempDocNotes, setTempDocNotes] = useState("")
 
     // Refs
     const fileInputRef = useRef<HTMLInputElement>(null)
     const dialogFileInputRef = useRef<HTMLInputElement>(null)
+    const logoInputRef = useRef<HTMLInputElement>(null)
 
     // Payment State
     const [subTotal, setSubTotal] = useState<number>(0)
@@ -105,6 +107,29 @@ export default function ManagementAccountAddRecord() {
         if (file) handleDialogFileSelect(file)
     }
 
+    // Logo Handlers
+    const handleLogoSelect = (file: File) => {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                setClientLogo(reader.result as string)
+            }
+            reader.readAsDataURL(file)
+        }
+    }
+
+    const handleLogoInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) handleLogoSelect(file)
+    }
+
+    const handleLogoDrop = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+        const file = e.dataTransfer.files[0]
+        if (file) handleLogoSelect(file)
+    }
+
     return (
         <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500 pb-20 p-4 md:p-6">
             <div className="flex items-center gap-4">
@@ -125,22 +150,61 @@ export default function ManagementAccountAddRecord() {
                     <fieldset className="border border-slate-200 dark:border-slate-800 rounded-lg shadow-sm p-6 bg-card">
                         <legend className="px-2 text-sm font-medium">General Details</legend>
                         <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="id">ID</Label>
-                                    <Input id="id" placeholder="ID" className="bg-slate-50 dark:bg-slate-900" />
+                            <div className="grid grid-cols-[1fr_200px] gap-4">
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="id">ID</Label>
+                                        <Input id="id" placeholder="ID" className="bg-slate-50 dark:bg-slate-900" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Date</Label>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button variant="outline" className="w-full justify-start text-left font-normal">
+                                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={date} onSelect={setDate} initialFocus /></PopoverContent>
+                                        </Popover>
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Date</Label>
-                                    <Popover>
-                                        <PopoverTrigger asChild>
-                                            <Button variant="outline" className="w-full justify-start text-left font-normal">
-                                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                                {date ? format(date, "PPP") : <span>Pick a date</span>}
-                                            </Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={date} onSelect={setDate} initialFocus /></PopoverContent>
-                                    </Popover>
+
+                                {/* Logo Upload Area */}
+                                <div>
+                                    <Label>Client Logo (Optional)</Label>
+                                    <input
+                                        ref={logoInputRef}
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleLogoInputChange}
+                                    />
+                                    <div
+                                        className="mt-2 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-muted/30 transition-colors w-[200px] h-[120px] relative overflow-hidden"
+                                        onClick={() => logoInputRef.current?.click()}
+                                        onDragOver={handleDragOver}
+                                        onDrop={handleLogoDrop}
+                                    >
+                                        {clientLogo ? (
+                                            <>
+                                                <img src={clientLogo} alt="Client logo" className="max-h-full max-w-full object-contain p-2" />
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="absolute top-1 right-1 h-5 w-5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-destructive hover:text-destructive-foreground"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        setClientLogo(null)
+                                                    }}
+                                                >
+                                                    <X className="h-3 w-3" />
+                                                </Button>
+                                            </>
+                                        ) : (
+                                            <UploadCloud className="h-8 w-8 text-muted-foreground" />
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                             <div className="space-y-2">
@@ -232,8 +296,8 @@ export default function ManagementAccountAddRecord() {
                             <div className="space-y-2">
                                 <Label htmlFor="subtotal">Sub Total</Label>
                                 <div className="relative">
-                                    <span className="absolute left-3 inset-y-0 flex items-center text-muted-foreground">$</span>
-                                    <Input id="subtotal" type="number" className="pl-7 font-semibold" value={subTotal || ""} onChange={(e) => setSubTotal(Number(e.target.value))} />
+                                    <span className="absolute left-3 inset-y-0 flex items-center text-muted-foreground text-sm font-bold uppercase">LKR</span>
+                                    <Input id="subtotal" type="number" className="pl-12 font-semibold" value={subTotal || ""} onChange={(e) => setSubTotal(Number(e.target.value))} placeholder="0.00" />
                                 </div>
                             </div>
                             <div className="space-y-3">
@@ -244,13 +308,59 @@ export default function ManagementAccountAddRecord() {
                                     <div className="flex items-center space-x-2"><RadioGroupItem value="cheque" id="opt-cheque" /><Label htmlFor="opt-cheque">Cheque</Label></div>
                                 </RadioGroup>
                             </div>
+                            {/* Issue Cheque Sub-form */}
                             {paymentOption === "cheque" && (
-                                <Card className="bg-muted/50 p-4 space-y-4 border-none shadow-none">
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <Input placeholder="Number" /><Input type="date" /><Input type="number" placeholder="Amount" />
-                                        <Select defaultValue="Pending"><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="Pending">Pending</SelectItem><SelectItem value="Cleared">Cleared</SelectItem><SelectItem value="Return">Return</SelectItem></SelectContent></Select>
+                                <div className="border border-blue-100 bg-blue-50/50 dark:bg-blue-900/20 dark:border-blue-900 rounded-md p-4 space-y-4 animate-in fade-in slide-in-from-top-2">
+                                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 mb-2">
+                                        <Banknote className="h-5 w-5" />
+                                        <h4 className="font-medium text-sm">Issue Cheque Details</h4>
                                     </div>
-                                </Card>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="cq-num">Cheque Number</Label>
+                                            <Input id="cq-num" placeholder="Enter cheque number" className="bg-white dark:bg-slate-950" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Date</Label>
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        className={cn(
+                                                            "w-full justify-start text-left font-normal",
+                                                            !date && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0">
+                                                    <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                                                </PopoverContent>
+                                            </Popover>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="cq-amount">Amount</Label>
+                                            <Input id="cq-amount" type="number" className="bg-white dark:bg-slate-950" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="cq-status">Status</Label>
+                                            <Select>
+                                                <SelectTrigger className="bg-white dark:bg-slate-950">
+                                                    <SelectValue placeholder="Status" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="pending">Pending</SelectItem>
+                                                    <SelectItem value="cleared">Cleared</SelectItem>
+                                                    <SelectItem value="return">Return</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                </div>
                             )}
                             <div className="space-y-3">
                                 <Label>Payment Status</Label>
@@ -260,14 +370,35 @@ export default function ManagementAccountAddRecord() {
                                     <div className="flex items-center space-x-2"><RadioGroupItem value="partial" id="st-partial" /><Label htmlFor="st-partial">Partial</Label></div>
                                 </RadioGroup>
                             </div>
+                            {/* Partial Payment Logic */}
                             {paymentStatus === "partial" && (
-                                <Card className="bg-amber-50 dark:bg-amber-900/10 p-4 grid grid-cols-2 gap-4 border-none shadow-none">
-                                    <div className="space-y-2"><Label>Paid Amount</Label><Input type="number" value={partialAmount || ""} onChange={(e) => setPartialAmount(Number(e.target.value))} /></div>
-                                    <div className="space-y-2"><Label>Balance Due</Label><Input value={balance.toFixed(2)} disabled className="text-red-500 font-bold" /></div>
-                                </Card>
+                                <div className="border border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800 rounded-md p-4 space-y-4 animate-in fade-in slide-in-from-top-2">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="part-amount">Paid Amount</Label>
+                                            <Input
+                                                id="part-amount"
+                                                type="number"
+                                                value={partialAmount || ""}
+                                                onChange={(e) => setPartialAmount(Number(e.target.value))}
+                                                className="bg-white dark:bg-slate-950"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="balance">Balance Due</Label>
+                                            <Input
+                                                id="balance"
+                                                value={balance.toFixed(2)}
+                                                disabled
+                                                className="bg-white/50 dark:bg-slate-950 font-semibold text-red-600"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             )}
                             <div className="space-y-2"><Label>Discount</Label><Input type="number" value={discount || ""} onChange={(e) => setDiscount(Number(e.target.value))} /></div>
-                            <div className="p-4 bg-slate-100 dark:bg-slate-900 rounded-lg flex justify-between items-center"><span className="font-semibold">Total Payment:</span><span className="text-xl font-bold">${totalPayment.toFixed(2)}</span></div>
+                            <div className="p-4 bg-slate-100 dark:bg-slate-900 rounded-lg flex justify-between items-center"><span className="font-semibold">Total Payment:</span><span className="text-xl font-bold">LKR {totalPayment.toFixed(2)}</span></div>
                         </div>
                     </fieldset>
                 </div>
@@ -322,7 +453,68 @@ export default function ManagementAccountAddRecord() {
                 </DialogContent>
             </Dialog>
 
-            <Dialog open={learnMoreOpen} onOpenChange={setLearnMoreOpen}><DialogContent><DialogHeader><DialogTitle>Management Account Guide</DialogTitle></DialogHeader><div className="py-2 text-sm text-muted-foreground"><p>Standard bookkeeping workflow. Ensure all required source documents are attached.</p></div></DialogContent></Dialog>
+            <Dialog open={learnMoreOpen} onOpenChange={setLearnMoreOpen}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-xl">
+                            <HelpCircle className="h-6 w-6 text-primary" />
+                            Guide: Add Management Account
+                        </DialogTitle>
+                        <DialogDescription>
+                            Follow these steps to ensure all financial data is captured accurately.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-6 py-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">1</div>
+                                    Client Identification
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Search and select the client from the database. Enter the registration ID and branch if applicable.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">2</div>
+                                    Period Details
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Specify the accounting period type (Monthly, Quarterly, etc.) and number to ensure correct financial mapping.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">3</div>
+                                    Source Invoices
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Attach all digital copies of invoices and billing statements. These are required for the bookkeeping stage.
+                                </p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-muted/50 space-y-2 border border-muted">
+                                <h4 className="font-semibold text-sm flex items-center gap-2">
+                                    <div className="size-5 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-[10px]">4</div>
+                                    Payment Summary
+                                </h4>
+                                <p className="text-xs text-muted-foreground leading-relaxed">
+                                    Input subtotals and discounts. The system calculates balances for partial or cheque-based payments automatically.
+                                </p>
+                            </div>
+                        </div>
+                        <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                            <h5 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Pro Tip</h5>
+                            <p className="text-xs leading-relaxed text-muted-foreground">
+                                Use the "Cheque" payment option to capture specific bank details and cheque numbers for better reconciliation.
+                            </p>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button onClick={() => setLearnMoreOpen(false)}>Got it, thanks!</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
             <Dialog open={discardConfirmation} onOpenChange={setDiscardConfirmation}><DialogContent><DialogHeader><DialogTitle>Discard Changes?</DialogTitle><DialogDescription>Unsaved changes will be lost.</DialogDescription></DialogHeader><DialogFooter><Button variant="outline" onClick={() => setDiscardConfirmation(false)}>Keep Editing</Button><Button variant="destructive" onClick={() => navigate("/management-account")}>Discard</Button></DialogFooter></DialogContent></Dialog>
         </div>
     )
