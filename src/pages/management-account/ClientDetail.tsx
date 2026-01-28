@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { Download, Printer, Edit, Trash2, CheckCircle, HelpCircle, Building2, FileText } from "lucide-react"
+import { Download, Printer, CheckCircle, HelpCircle, Building2, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -27,9 +27,9 @@ export default function ManagementAccountClientDetail() {
         paymentOption: "Online",
         paymentStatus: "Paid",
         assignment: "Provision of management accounts for the fiscal year 2023. Includes full bookkeeping and reconciliation.",
-        sourceDocuments: [
-            { id: "doc-1", name: "Bank_Statement_Jan.pdf", description: "January bank statements for reconciliation", size: "1.2MB" },
-            { id: "doc-2", name: "Invoices_Q4.pdf", description: "Expense invoices from Q4 2023", size: "2.4MB" }
+        documents: [
+            { id: "doc-1", name: "Bank_Statement_Jan.pdf", desc: "January bank statements for reconciliation", size: "1.2MB" },
+            { id: "doc-2", name: "Invoices_Q4.pdf", desc: "Expense invoices from Q4 2023", size: "2.4MB" }
         ],
         logo: null
     }
@@ -50,7 +50,7 @@ export default function ManagementAccountClientDetail() {
 
         if (stepIndex === currentIndex + 1) {
             // Special validation for handover
-            if (step === "Handover" && clientData.sourceDocuments.length === 0) {
+            if (step === "Handover" && clientData.documents.length === 0) {
                 setAlertMessage("At least one source document must be added before completing the Handover process.")
                 setAlertOpen(true)
                 return
@@ -83,8 +83,12 @@ export default function ManagementAccountClientDetail() {
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{clientData.clientName}</h1>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm"><Download className="mr-2 h-4 w-4" /> Download</Button>
-                    <Button variant="outline" size="sm"><Printer className="mr-2 h-4 w-4" /> Print</Button>
+                    <Button variant="download" size="default">
+                        <Download className="mr-2 h-4 w-4" /> Download
+                    </Button>
+                    <Button variant="print" size="default">
+                        <Printer className="mr-2 h-4 w-4" /> Print
+                    </Button>
                 </div>
             </div>
 
@@ -111,7 +115,6 @@ export default function ManagementAccountClientDetail() {
                 <Card><CardContent className="p-4"><p className="text-sm leading-relaxed">{clientData.assignment}</p></CardContent></Card>
             </div>
 
-            {/* Process Stepper */}
             <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-center md:text-left">Process</h3>
                 <ul className="relative flex flex-row gap-x-0 overflow-x-auto py-2 px-4 bg-muted/10 rounded-xl border border-dashed border-muted/50 justify-between md:justify-center">
@@ -120,18 +123,31 @@ export default function ManagementAccountClientDetail() {
                         return (
                             <li key={step} className="shrink basis-0 flex-1 group cursor-pointer" onClick={() => handleStepClick(step)}>
                                 <div className="min-w-10 min-h-10 w-full flex items-center text-xs align-middle">
-                                    <div className={cn("w-full h-px flex-1 bg-gray-200 dark:bg-neutral-700", status === "completed" ? "bg-green-600" : "bg-gray-200", idx === 0 && "invisible")}></div>
+                                    <div className={cn(
+                                        "w-full h-px flex-1 bg-gray-200 dark:bg-neutral-700",
+                                        status === "completed" ? "bg-green-600" : "bg-gray-200",
+                                        idx === 0 && "invisible"
+                                    )}></div>
                                     <span className={cn(
                                         "size-10 flex justify-center items-center shrink-0 font-medium rounded-full transition-colors text-sm relative z-10 mx-auto",
                                         status === "completed" ? "bg-green-600 text-white" :
-                                            status === "current" ? "bg-blue-600 text-white ring-4 ring-blue-100" :
-                                                "bg-gray-100 text-gray-800 dark:bg-neutral-700"
+                                            status === "current" ? "bg-blue-600 text-white ring-4 ring-blue-100 dark:ring-blue-900/30" :
+                                                "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white"
                                     )}>
-                                        {status === "completed" ? <CheckCircle className="size-5" /> : idx + 1}
+                                        {status === "completed" ? <CheckCircle className="h-5 w-5" /> : idx + 1}
                                     </span>
-                                    <div className={cn("w-full h-px flex-1 bg-gray-200 dark:bg-neutral-700", status === "completed" ? "bg-green-600" : "bg-gray-200", idx === processes.length - 1 && "invisible")}></div>
+                                    <div className={cn(
+                                        "w-full h-px flex-1 bg-gray-200 dark:bg-neutral-700",
+                                        status === "completed" ? "bg-green-600" : "bg-gray-200",
+                                        idx === processes.length - 1 && "invisible"
+                                    )}></div>
                                 </div>
-                                <div className="mt-3 text-center"><span className={cn("text-sm font-medium transition-colors", status === "upcoming" ? "text-muted-foreground" : "")}>{step}</span></div>
+                                <div className="mt-3 text-center">
+                                    <span className={cn(
+                                        "block text-sm font-medium transition-colors",
+                                        status === "upcoming" ? "text-muted-foreground" : "text-gray-800 dark:text-white"
+                                    )}>{step}</span>
+                                </div>
                             </li>
                         )
                     })}
@@ -139,28 +155,32 @@ export default function ManagementAccountClientDetail() {
             </div>
 
             {/* Source Documents Section */}
-            <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Source Documents</h3>
-                </div>
-                {clientData.sourceDocuments.length === 0 ? (
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Source Documents</h3>
+                {clientData.documents.length === 0 ? (
                     <p className="text-sm text-muted-foreground italic bg-muted/20 p-6 rounded-xl border border-dashed text-center">No documents uploaded yet.</p>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {clientData.sourceDocuments.map((doc) => (
-                            <Card key={doc.id} className="group hover:border-primary/50 transition-colors">
-                                <CardContent className="p-4 flex items-start gap-4">
-                                    <div className="size-10 rounded bg-primary/10 flex items-center justify-center text-primary shrink-0"><FileText className="size-6" /></div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{doc.name}</p>
-                                        <p className="text-xs text-muted-foreground line-clamp-1 mt-1">{doc.description}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {clientData.documents.map((doc, i) => (
+                            <div key={i} className="flex items-center p-3 border rounded-lg bg-card shadow-sm hover:shadow-md transition-shadow gap-3">
+                                <div className="flex items-center gap-3 min-w-0 flex-1">
+                                    <div className="bg-primary/10 p-2 rounded-lg shrink-0">
+                                        <FileText className="h-5 w-5 text-primary" />
                                     </div>
-                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Button variant="ghost" size="icon" className="size-8"><Download className="size-4" /></Button>
-                                        <Button variant="ghost" size="icon" className="size-8"><Printer className="size-4" /></Button>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="font-medium text-sm truncate" title={doc.name}>{doc.name}</p>
+                                        <p className="text-xs text-muted-foreground truncate" title={doc.desc}>{doc.desc}</p>
                                     </div>
-                                </CardContent>
-                            </Card>
+                                </div>
+                                <div className="flex gap-0.5 shrink-0 ml-1">
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" title="Download">
+                                        <Download className="h-4 w-4" />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" title="Print">
+                                        <Printer className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            </div>
                         ))}
                     </div>
                 )}
@@ -171,9 +191,13 @@ export default function ManagementAccountClientDetail() {
                 <button className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 order-2 md:order-1" onClick={() => setHelpDialogOpen(true)}>
                     <HelpCircle className="h-4 w-4" /> Learn more about Client Page
                 </button>
-                <div className="flex gap-2 order-1 md:order-2">
-                    <Button variant="outline" size="sm" onClick={() => navigate("/management-account/new")}><Edit className="mr-2 h-4 w-4" /> Edit</Button>
-                    <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}><Trash2 className="mr-2 h-4 w-4" /> Delete</Button>
+                <div className="flex gap-3 order-1 md:order-2">
+                    <Button variant="outline" size="default" className="bg-background w-28" onClick={() => navigate("/management-account/new")}>
+                        Edit
+                    </Button>
+                    <Button variant="destructive" size="default" className="w-28" onClick={() => setDeleteDialogOpen(true)}>
+                        Delete
+                    </Button>
                 </div>
             </div>
 

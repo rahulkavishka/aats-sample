@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { Download, Printer, Edit, Trash2, CheckCircle, HelpCircle, Building2 } from "lucide-react"
+import { Download, Printer, CheckCircle, HelpCircle, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -77,8 +77,12 @@ export default function InternalControlClientDetail() {
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{clientData.clientName}</h1>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm"><Download className="mr-2 h-4 w-4" /> Download</Button>
-                    <Button variant="outline" size="sm"><Printer className="mr-2 h-4 w-4" /> Print</Button>
+                    <Button variant="download" size="default">
+                        <Download className="mr-2 h-4 w-4" /> Download
+                    </Button>
+                    <Button variant="print" size="default">
+                        <Printer className="mr-2 h-4 w-4" /> Print
+                    </Button>
                 </div>
             </div>
 
@@ -98,7 +102,7 @@ export default function InternalControlClientDetail() {
                 <Card className="shadow-sm border-slate-100 dark:border-slate-800">
                     <CardContent className="p-4 space-y-1">
                         <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Period</p>
-                        <p className="text-xl font-bold text-primary">{clientData.period}</p>
+                        <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{clientData.period}</p>
                     </CardContent>
                 </Card>
                 <Card className="shadow-sm border-slate-100 dark:border-slate-800">
@@ -170,12 +174,12 @@ export default function InternalControlClientDetail() {
                 <button className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 order-2 md:order-1" onClick={() => setHelpDialogOpen(true)}>
                     <HelpCircle className="h-4 w-4" /> Learn more about Client Page
                 </button>
-                <div className="flex gap-2 order-1 md:order-2">
-                    <Button variant="outline" size="sm" onClick={() => navigate("/internal-control-outsourcing/new")}>
-                        <Edit className="mr-2 h-4 w-4 text-muted-foreground" /> Edit
+                <div className="flex gap-3 order-1 md:order-2">
+                    <Button variant="outline" size="default" className="bg-background w-28" onClick={() => navigate("/internal-control-outsourcing/new")}>
+                        Edit
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
-                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                    <Button variant="destructive" size="default" className="w-28" onClick={() => setDeleteDialogOpen(true)}>
+                        Delete
                     </Button>
                 </div>
             </div>
@@ -208,13 +212,8 @@ export default function InternalControlClientDetail() {
 
             <Dialog open={alertOpen} onOpenChange={setAlertOpen}>
                 <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                        <DialogTitle className="text-center">System Alert</DialogTitle>
-                        <DialogDescription className="text-center">{alertMessage}</DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter className="sm:justify-center">
-                        <Button onClick={() => setAlertOpen(false)}>OK</Button>
-                    </DialogFooter>
+                    <DialogHeader><DialogTitle className="text-center">Action Required</DialogTitle><DialogDescription className="text-center">{alertMessage}</DialogDescription></DialogHeader>
+                    <DialogFooter className="sm:justify-center"><Button onClick={() => setAlertOpen(false)}>OK</Button></DialogFooter>
                 </DialogContent>
             </Dialog>
 

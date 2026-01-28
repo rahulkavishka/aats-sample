@@ -28,5 +28,9 @@ export const mockRecords: Record[] = [
     { id: "REC-018", date: "2024-06-01", clientName: "Sigma Data", paymentStatus: "Unpaid", process: "Bookkeep", branch: "West" },
     { id: "REC-019", date: "2024-06-10", clientName: "Tau Finances", paymentStatus: "Paid", process: "Draft", branch: "Central" },
     { id: "REC-020", date: "2024-06-20", clientName: "Upsilon Services", paymentStatus: "Unpaid", process: "Return", branch: "Northeast" },
-    { id: "REC-021", date: "2024-07-01", clientName: "Phi Manufacturing", paymentStatus: "Partial", process: "Handover", branch: "South" }
+    { id: "REC-021", date: "2024-07-01", clientName: "Phi Manufacturing", paymentStatus: "Partial", process: "Handover", branch: "South" },
+    { id: "REC-022", date: "2024-07-05", clientName: "Chi Electronics", paymentStatus: "Paid", process: "Bookkeep", branch: "West" },
+    { id: "REC-023", date: "2024-07-10", clientName: "Psi Aerospace", paymentStatus: "Unpaid", process: "Draft", branch: "Central" },
+    { id: "REC-024", date: "2024-07-15", clientName: "Omega Energy", paymentStatus: "Paid", process: "Finalize", branch: "Northeast" },
+    { id: "REC-025", date: "2024-07-20", clientName: "Alpha Logistics", paymentStatus: "Partial", process: "Handover", branch: "South" }
 ]

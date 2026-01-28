@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { Download, Printer, Edit, Trash2, CheckCircle, AlertCircle, FileText, HelpCircle, AlertTriangle, Building2 } from "lucide-react"
+import { Download, Printer, CheckCircle, AlertCircle, FileText, HelpCircle, AlertTriangle, Building2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -149,10 +149,10 @@ export default function ClientDetail() {
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="download" size="default">
                         <Download className="mr-2 h-4 w-4" /> Download
                     </Button>
-                    <Button variant="outline" size="sm">
+                    <Button variant="print" size="default">
                         <Printer className="mr-2 h-4 w-4" /> Print
                     </Button>
                 </div>
@@ -333,12 +333,12 @@ export default function ClientDetail() {
                     <HelpCircle className="h-4 w-4" />
                     Learn more about Client Page
                 </button>
-                <div className="flex gap-2 order-1 md:order-2">
-                    <Button variant="outline" size="sm" className="bg-background" onClick={() => navigate("/audit-assurance/new")}>
-                        <Edit className="mr-2 h-4 w-4 text-muted-foreground" /> Edit
+                <div className="flex gap-3 order-1 md:order-2">
+                    <Button variant="outline" size="default" className="bg-background w-28" onClick={() => navigate("/audit-assurance/new")}>
+                        Edit
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => setDeleteDialogOpen(true)}>
-                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                    <Button variant="destructive" size="default" className="w-28" onClick={() => setDeleteDialogOpen(true)}>
+                        Delete
                     </Button>
                 </div>
             </div>
@@ -464,19 +464,9 @@ export default function ClientDetail() {
 
             {/* Alert Dialog (Replacing native alert) */}
             <Dialog open={alertOpen} onOpenChange={setAlertOpen}>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
-                            <HelpCircle className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <DialogTitle className="text-center text-xl">System Alert</DialogTitle>
-                        <DialogDescription className="text-center pt-2">
-                            {alertMessage}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter className="sm:justify-center mt-4">
-                        <Button onClick={() => setAlertOpen(false)} className="w-full sm:w-32">OK</Button>
-                    </DialogFooter>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader><DialogTitle className="text-center">Action Required</DialogTitle><DialogDescription className="text-center">{alertMessage}</DialogDescription></DialogHeader>
+                    <DialogFooter className="sm:justify-center"><Button onClick={() => setAlertOpen(false)}>OK</Button></DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>

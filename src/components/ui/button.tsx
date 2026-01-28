@@ -12,13 +12,17 @@ const buttonVariants = cva(
         default:
           "bg-primary text-primary-foreground shadow hover:bg-primary/90",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "bg-rose-600 text-white hover:bg-rose-700 shadow-lg shadow-rose-500/20",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+          "border border-slate-300 text-[#4A7FA7] hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+          "bg-[#B3CFE5] text-[#0A1931] hover:bg-[#B3CFE5]/80 dark:bg-slate-800 dark:text-[#B3CFE5] dark:hover:bg-slate-700 shadow-sm",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        download:
+          "bg-slate-100 text-[#4A7FA7] hover:bg-[#4A7FA7] hover:text-white dark:bg-[#B3CFE5]/10 dark:text-[#B3CFE5] dark:hover:bg-[#B3CFE5] dark:hover:text-[#0A1931] shadow-sm transition-all duration-200",
+        print:
+          "border border-[#B3CFE5] text-[#0A1931] hover:bg-[#B3CFE5] dark:border-slate-800 dark:text-[#F6FAFD] dark:hover:bg-slate-700 shadow-sm transition-all duration-200",
       },
       size: {
         default: "h-9 px-4 py-2",
@@ -36,7 +40,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean
 }
 

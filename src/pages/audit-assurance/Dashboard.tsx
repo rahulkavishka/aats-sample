@@ -113,7 +113,7 @@ export default function AuditAssurance() {
 
 
     return (
-        <div className="flex flex-col h-full space-y-6 p-4 md:p-6 animate-in fade-in duration-500 pb-10">
+        <div className="flex flex-col space-y-6 p-4 md:p-6 animate-in fade-in duration-500 pb-10">
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
@@ -142,14 +142,12 @@ export default function AuditAssurance() {
 
                         {/* Selection Actions (Inline with Search) */}
                         {selectedRows.length > 0 && (
-                            <div className="flex items-center gap-2 bg-muted px-2 py-1.5 rounded-md whitespace-nowrap animate-in slide-in-from-right-2 fade-in flex-none">
+                            <div className="flex items-center gap-2 bg-muted px-2 py-1.5 rounded-md whitespace-nowrap animate-in slide-in-from-right-2 fade-in">
                                 <span className="text-xs font-medium">{selectedRows.length} selected</span>
-                                <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:bg-destructive/20 hover:text-destructive" onClick={handleDeleteSelected}>
+                                <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:bg-destructive/20" onClick={handleDeleteSelected}>
                                     <Trash2 className="h-3 w-3" />
                                 </Button>
-                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setSelectedRows([])}>
-                                    <X className="h-3 w-3" />
-                                </Button>
+                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => setSelectedRows([])}><X className="h-3 w-3" /></Button>
                             </div>
                         )}
                     </div>
@@ -279,7 +277,7 @@ export default function AuditAssurance() {
                     </div>
 
                     {/* 3. Other Filters */}
-                    <div className="flex gap-2 w-full xl:w-auto overflow-x-auto pb-1">
+                    <div className="flex gap-2 w-full xl:w-auto overflow-x-auto p-1">
                         <Select value={statusFilter} onValueChange={setStatusFilter}>
                             <SelectTrigger className="w-[140px]">
                                 <SelectValue placeholder="Status" />
@@ -322,21 +320,21 @@ export default function AuditAssurance() {
             </Card>
 
             {/* Table Section */}
-            <div className="rounded-md border bg-card shadow-sm flex-1 overflow-hidden flex flex-col">
+            <div className="rounded-md border bg-card shadow-sm flex flex-col">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[50px]">
+                            <TableHead className="w-[50px] pl-6 pr-4">
                                 <Checkbox
                                     checked={mockRecords.length > 0 && selectedRows.length === mockRecords.length}
                                     onCheckedChange={toggleSelectAll}
                                 />
                             </TableHead>
-                            <TableHead>ID</TableHead>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Client</TableHead>
-                            <TableHead>Payment Status</TableHead>
-                            <TableHead>Process</TableHead>
+                            <TableHead className="font-bold text-[15px] text-foreground">ID</TableHead>
+                            <TableHead className="font-bold text-[15px] text-foreground">Date</TableHead>
+                            <TableHead className="font-bold text-[15px] text-foreground">Client</TableHead>
+                            <TableHead className="font-bold text-[15px] text-foreground">Payment Status</TableHead>
+                            <TableHead className="font-bold text-[15px] text-foreground">Process</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -354,7 +352,7 @@ export default function AuditAssurance() {
                                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                                     onClick={() => navigate(`/audit-assurance/${record.id}`)}
                                 >
-                                    <TableCell onClick={(e) => e.stopPropagation()}>
+                                    <TableCell className="pl-6 pr-4" onClick={(e) => e.stopPropagation()}>
                                         <Checkbox
                                             checked={selectedRows.includes(record.id)}
                                             onCheckedChange={() => toggleSelect(record.id)}
@@ -513,13 +511,13 @@ export default function AuditAssurance() {
 }
 
 const StatusBadge = ({ status }: { status: string }) => {
-    // Standardize status for matching
     const s = status.toLowerCase()
-    let variant: "default" | "secondary" | "destructive" | "outline" | "success" | "warning" | "pending" = "default"
+    let variant: "paid" | "destructive" | "pending" | "partial" | "secondary" = "secondary"
 
-    if (s === "paid") variant = "success"
+    if (s === "paid") variant = "paid"
     else if (s === "unpaid") variant = "destructive"
-    else if (s === "partial") variant = "warning"
+    else if (s === "partial" || s === "ird") variant = "partial"
+    else if (s === "pending") variant = "pending"
 
     return <Badge variant={variant} className="capitalize">{status}</Badge>
 }
