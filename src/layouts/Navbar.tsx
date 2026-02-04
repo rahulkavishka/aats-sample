@@ -128,6 +128,13 @@ export function Navbar() {
                         </>
                     )}
 
+
+                    {location.pathname === "/nexora" && (
+                        <li className="inline-flex items-center text-sm font-medium text-sidebar-primary truncate" aria-current="page">
+                            Nexora
+                        </li>
+                    )}
+
                     {location.pathname.startsWith("/audit-assurance") && (
                         <>
                             <li className="inline-flex items-center">

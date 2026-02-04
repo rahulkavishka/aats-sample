@@ -48,6 +48,8 @@ import TradeMarkAdd from "@/pages/secretarial-advisory/trade-mark/AddRecord"
 import TradeMarkDetail from "@/pages/secretarial-advisory/trade-mark/TradeMarkDetail"
 import ActivityLog from "@/pages/ActivityLog"
 
+import Nexora from "@/pages/Nexora"
+
 function App() {
   return (
     <Router>
@@ -56,6 +58,7 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Navigate to="/login" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="nexora" element={<Nexora />} />
           <Route path="clients" element={<Clients />} />
           <Route path="team" element={<Team />} />
           <Route path="audit-assurance" element={<AuditAssuranceDashboard />} />

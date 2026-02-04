@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom"
-import { ChevronDown, ChevronRight, FileText, Home, Users, Building2, History } from "lucide-react"
+import { ChevronDown, ChevronRight, FileText, Home, Users, Building2, History, LayoutGrid } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 
@@ -43,6 +43,8 @@ export function Sidebar() {
                         <Home className="h-4 w-4" />
                         <span>Dashboard</span>
                     </Link>
+
+
 
 
 
@@ -234,7 +236,7 @@ export function Sidebar() {
                     <Link
                         to="/activity-log"
                         className={cn(
-                            "flex items-center gap-3 rounded-lg px-2 py-1.5 transition-all duration-200 mt-2",
+                            "flex items-center gap-3 rounded-lg px-2 py-1.5 transition-all duration-200 mt-2 mb-2",
                             location.pathname === "/activity-log"
                                 ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
                                 : "text-sidebar-foreground/70 hover:text-sidebar-primary hover:bg-sidebar-primary/10"
@@ -242,6 +244,19 @@ export function Sidebar() {
                     >
                         <History className="h-4 w-4" />
                         <span>Activity Log</span>
+                    </Link>
+                    {/* Nexora Link */}
+                    <Link
+                        to="/nexora"
+                        className={cn(
+                            "flex items-center gap-3 rounded-lg px-2 py-1.5 transition-all duration-200 mb-2",
+                            location.pathname === "/nexora"
+                                ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
+                                : "text-sidebar-foreground/70 hover:text-sidebar-primary hover:bg-sidebar-primary/10"
+                        )}
+                    >
+                        <LayoutGrid className="h-4 w-4" />
+                        <span>Nexora</span>
                     </Link>
                 </nav>
             </div>
