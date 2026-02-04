@@ -114,7 +114,7 @@ export default function InternalAuditAddRecord() {
                                 </div>
 
                                 {/* Logo Upload Area */}
-                                <div>
+                                <div className="space-y-2">
                                     <Label>Client Logo (Optional)</Label>
                                     <input
                                         ref={logoInputRef}

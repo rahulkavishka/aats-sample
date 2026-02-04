@@ -239,16 +239,16 @@ export default function ManagementAccountDashboard() {
                 </CardContent>
             </Card>
 
-            <div className="rounded-md border bg-card shadow-sm flex flex-col">
+            <Card className="border-slate-200 dark:border-slate-800 overflow-hidden">
                 <Table>
                     <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-[50px] pl-6 pr-4"><Checkbox checked={selectedRows.length === managementAccountRecords.length} onCheckedChange={toggleSelectAll} /></TableHead>
-                            <TableHead className="font-bold text-[15px] text-foreground">ID</TableHead>
-                            <TableHead className="font-bold text-[15px] text-foreground">Date</TableHead>
-                            <TableHead className="font-bold text-[15px] text-foreground">Client</TableHead>
-                            <TableHead className="font-bold text-[15px] text-foreground">Payment Status</TableHead>
-                            <TableHead className="font-bold text-[15px] text-foreground">Process</TableHead>
+                        <TableRow className="bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                            <TableHead className="pl-6"><Checkbox checked={selectedRows.length === managementAccountRecords.length} onCheckedChange={toggleSelectAll} /></TableHead>
+                            <TableHead>ID</TableHead>
+                            <TableHead>Date</TableHead>
+                            <TableHead>Client</TableHead>
+                            <TableHead>Payment Status</TableHead>
+                            <TableHead>Process</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -264,7 +264,7 @@ export default function ManagementAccountDashboard() {
                         ))}
                     </TableBody>
                 </Table>
-            </div>
+            </Card>
 
             <div className="flex items-center justify-between pt-2">
                 <button className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors" onClick={() => setLearnMoreOpen(true)}>

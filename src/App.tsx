@@ -46,6 +46,7 @@ import TradeLicenseDetail from "@/pages/secretarial-advisory/trade-license/Trade
 import TradeMarkDashboard from "@/pages/secretarial-advisory/trade-mark/Dashboard"
 import TradeMarkAdd from "@/pages/secretarial-advisory/trade-mark/AddRecord"
 import TradeMarkDetail from "@/pages/secretarial-advisory/trade-mark/TradeMarkDetail"
+import ActivityLog from "@/pages/ActivityLog"
 
 function App() {
   return (
@@ -104,6 +105,7 @@ function App() {
           <Route path="secretarial-advisory/trade-mark" element={<TradeMarkDashboard />} />
           <Route path="secretarial-advisory/trade-mark/new" element={<TradeMarkAdd />} />
           <Route path="secretarial-advisory/trade-mark/:id" element={<TradeMarkDetail />} />
+          <Route path="activity-log" element={<ActivityLog />} />
         </Route>
       </Routes>
     </Router>

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom"
-import { ChevronDown, ChevronRight, FileText, Home, Users, Building2 } from "lucide-react"
+import { ChevronDown, ChevronRight, FileText, Home, Users, Building2, History } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 
@@ -22,10 +22,10 @@ export function Sidebar() {
 
     return (
         <aside className="w-64 border-r border-sidebar-border bg-sidebar hidden md:block flex-shrink-0">
-            <div className="flex h-14 items-center justify-center border-sidebar-border/50 lg:h-[60px]">
+            <div className="flex h-14 items-center justify-center border-sidebar-border/50 lg:h-[80px]">
                 <Link to="/dashboard" className="flex items-center gap-3 font-bold text-xl tracking-tight">
-                    <img src="/logo.png" alt="AATS Logo" className="h-8 w-8 object-contain" />
-                    <span className="text-sidebar-primary text-2xl">AATS</span>
+                    <img src="/logo.png" alt="AATS Logo" className="h-12 w-12 object-contain" />
+                    <span className="text-sidebar-primary text-lg">AATS <br />Management System <span className="text-sidebar-primary-foreground">.</span></span>
                 </Link>
             </div>
             <div className="flex-1 overflow-auto py-3">
@@ -228,6 +228,20 @@ export function Sidebar() {
                     >
                         <Users className="h-4 w-4" />
                         <span>Team</span>
+                    </Link>
+
+                    {/* Activity Log Link */}
+                    <Link
+                        to="/activity-log"
+                        className={cn(
+                            "flex items-center gap-3 rounded-lg px-2 py-1.5 transition-all duration-200 mt-2",
+                            location.pathname === "/activity-log"
+                                ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium shadow-sm"
+                                : "text-sidebar-foreground/70 hover:text-sidebar-primary hover:bg-sidebar-primary/10"
+                        )}
+                    >
+                        <History className="h-4 w-4" />
+                        <span>Activity Log</span>
                     </Link>
                 </nav>
             </div>

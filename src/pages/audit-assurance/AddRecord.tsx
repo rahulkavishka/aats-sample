@@ -195,7 +195,7 @@ export default function AddRecord() {
                                 </div>
 
                                 {/* Right: Client Logo */}
-                                <div>
+                                <div className="space-y-2">
                                     <Label>Client Logo (Optional)</Label>
                                     <input
                                         ref={logoInputRef}

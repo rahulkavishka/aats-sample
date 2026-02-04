@@ -158,8 +158,8 @@ export default function Clients() {
 
             {/* SEARCH */}
             {/* SEARCH */}
-            <div className="flex items-center p-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-lg">
-                <div className="flex items-center gap-2 w-full">
+            <Card className="shadow-sm border-slate-200 dark:border-slate-800">
+                <div className="p-4 grid gap-4 grid-cols-1 xl:grid-cols-[1fr_auto_auto]">
                     <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                         <Input
@@ -194,27 +194,27 @@ export default function Clients() {
                         </div>
                     )}
                 </div>
-            </div>
+            </Card>
 
             {/* CUSTOMERS TABLE */}
-            <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 overflow-hidden">
+            <Card className="border-slate-200 dark:border-slate-800 overflow-hidden">
                 <CardContent className="p-0">
                     <Table>
                         <TableHeader>
-                            <TableRow className="border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-900 bg-slate-50 dark:bg-slate-950/50">
-                                <TableHead className="w-[50px] pl-6">
+                            <TableRow className="bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-900/5">
+                                <TableHead className="pl-6">
                                     <Checkbox
                                         checked={selectedRows.length === filteredCustomers.length && filteredCustomers.length > 0}
                                         onCheckedChange={toggleSelectAll}
                                         aria-label="Select all"
                                     />
                                 </TableHead>
-                                <TableHead className="text-slate-500 dark:text-slate-400">ID</TableHead>
-                                <TableHead className="text-slate-500 dark:text-slate-400">Client</TableHead>
-                                <TableHead className="text-slate-500 dark:text-slate-400">Contact</TableHead>
-                                <TableHead className="text-slate-500 dark:text-slate-400">Category</TableHead>
-                                <TableHead className="text-slate-500 dark:text-slate-400">Total Revenue</TableHead>
-                                <TableHead className="text-slate-500 dark:text-slate-400">Status</TableHead>
+                                <TableHead>ID</TableHead>
+                                <TableHead>Client</TableHead>
+                                <TableHead>Contact</TableHead>
+                                <TableHead>Category</TableHead>
+                                <TableHead>Total Revenue</TableHead>
+                                <TableHead>Status</TableHead>
                                 <TableHead className="text-right text-slate-500 dark:text-slate-400 pr-6">Action</TableHead>
                             </TableRow>
                         </TableHeader>
