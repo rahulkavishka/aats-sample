@@ -25,7 +25,7 @@ export function Sidebar() {
             <div className="flex h-14 items-center justify-center border-sidebar-border/50 lg:h-[80px]">
                 <Link to="/dashboard" className="flex items-center gap-3 font-bold text-xl tracking-tight">
                     <img src="/logo.png" alt="AATS Logo" className="h-12 w-12 object-contain" />
-                    <span className="text-sidebar-primary text-lg">AATS <br />Management System <span className="text-sidebar-primary-foreground">.</span></span>
+                    <span className="text-sidebar-primary text-lg">AATS <br />Management System</span>
                 </Link>
             </div>
             <div className="flex-1 overflow-auto py-3">

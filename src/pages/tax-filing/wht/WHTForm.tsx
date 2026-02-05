@@ -1,4 +1,4 @@
-import React from 'react';
+import { Save } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -155,20 +155,20 @@ const WHTForm: React.FC<WHTFormProps> = ({ onSubmit }) => {
                             type="button"
                             variant="outline"
                             onClick={() => reset()}
-                            className="w-24"
                         >
                             Clear
                         </Button>
                         <Button
                             type="submit"
-                            className="w-24 bg-primary hover:bg-primary/90"
+                            className="gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/20 transition-all duration-300 hover:scale-[1.01]"
                         >
+                            <Save className="mr-2 h-4 w-4" />
                             Submit
                         </Button>
                     </div>
                 </form>
-            </CardContent>
-        </Card>
+            </CardContent >
+        </Card >
     );
 };
 

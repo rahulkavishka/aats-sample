@@ -186,20 +186,22 @@ export default function ActivityLog() {
 
       {/* Filters & Search Section in Card */}
       <Card className="shadow-sm border-slate-200 dark:border-slate-800">
-        <CardContent className="p-4 flex flex-wrap items-center gap-4">
+        <CardContent className="p-4 grid gap-4 grid-cols-1 xl:grid-cols-[1fr_auto_auto]">
 
-          {/* Search */}
-          <div className="relative w-full md:w-96">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search ID, Client, Period..."
-              className="pl-9"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+          {/* 1. Search & Selection Actions Container */}
+          <div className="flex items-center gap-2 w-full">
+            <div className="relative w-full">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search ID, Client, Period..."
+                className="pl-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
           </div>
 
-          {/* Advanced Date Filter */}
+          {/* 2. Advanced Date Filter */}
           <div className="flex flex-wrap items-center gap-2">
             <Select
               value={filterType}
@@ -323,65 +325,69 @@ export default function ActivityLog() {
             )}
           </div>
 
-          {/* Action Filter */}
-          <Select value={actionFilter} onValueChange={setActionFilter}>
-            <SelectTrigger className="w-[140px]">
-              <Filter className="mr-2 h-4 w-4 opacity-50" />
-              <SelectValue placeholder="All Actions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Actions</SelectItem>
-              <SelectItem value="create">Create</SelectItem>
-              <SelectItem value="update">Update</SelectItem>
-              <SelectItem value="delete">Delete</SelectItem>
-              <SelectItem value="login">Login</SelectItem>
-            </SelectContent>
-          </Select>
+          {/* 3. Dropdown Filters Group */}
+          <div className="flex gap-2 w-full xl:w-auto overflow-x-auto p-1">
+            {/* Action Filter */}
+            <Select value={actionFilter} onValueChange={setActionFilter}>
+              <SelectTrigger className="w-[140px]">
+                <Filter className="mr-2 h-4 w-4 opacity-50" />
+                <SelectValue placeholder="All Actions" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Actions</SelectItem>
+                <SelectItem value="create">Create</SelectItem>
+                <SelectItem value="update">Update</SelectItem>
+                <SelectItem value="delete">Delete</SelectItem>
+                <SelectItem value="login">Login</SelectItem>
+              </SelectContent>
+            </Select>
 
-          {/* Module Filter */}
-          <Select value={moduleFilter} onValueChange={setModuleFilter}>
-            <SelectTrigger className="w-[150px]">
-              <div className="mr-2 h-4 w-4 opacity-50 flex items-center justify-center border rounded-full text-[10px]">M</div>
-              <SelectValue placeholder="All Modules" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Modules</SelectItem>
-              <SelectItem value="audit">Audit & Assurance</SelectItem>
-              <SelectItem value="cit">CIT</SelectItem>
-              <SelectItem value="registration">Registration</SelectItem>
-              <SelectItem value="team">Team</SelectItem>
-              <SelectItem value="auth">Auth</SelectItem>
-            </SelectContent>
-          </Select>
+            {/* Module Filter */}
+            <Select value={moduleFilter} onValueChange={setModuleFilter}>
+              <SelectTrigger className="w-[150px]">
+                <div className="mr-2 h-4 w-4 opacity-50 flex items-center justify-center border rounded-full text-[10px]">M</div>
+                <SelectValue placeholder="All Modules" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Modules</SelectItem>
+                <SelectItem value="audit">Audit & Assurance</SelectItem>
+                <SelectItem value="cit">CIT</SelectItem>
+                <SelectItem value="registration">Registration</SelectItem>
+                <SelectItem value="team">Team</SelectItem>
+                <SelectItem value="auth">Auth</SelectItem>
+              </SelectContent>
+            </Select>
 
-          {/* Branch Filter */}
-          <Select value={branchFilter} onValueChange={setBranchFilter}>
-            <SelectTrigger className="w-[150px]">
-              <div className="mr-2 h-4 w-4 opacity-50 flex items-center justify-center border rounded-full text-[10px]">B</div>
-              <SelectValue placeholder="All Branches" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Branches</SelectItem>
-              <SelectItem value="central">Central</SelectItem>
-              <SelectItem value="northeast">North East</SelectItem>
-              <SelectItem value="west">West</SelectItem>
-              <SelectItem value="south">South</SelectItem>
-            </SelectContent>
-          </Select>
+            {/* Branch Filter */}
+            <Select value={branchFilter} onValueChange={setBranchFilter}>
+              <SelectTrigger className="w-[150px]">
+                <div className="mr-2 h-4 w-4 opacity-50 flex items-center justify-center border rounded-full text-[10px]">B</div>
+                <SelectValue placeholder="All Branches" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Branches</SelectItem>
+                <SelectItem value="central">Central</SelectItem>
+                <SelectItem value="northeast">North East</SelectItem>
+                <SelectItem value="west">West</SelectItem>
+                <SelectItem value="south">South</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
         </CardContent>
       </Card>
 
       {/* Table */}
-      <div className="rounded-md border bg-card shadow-sm flex flex-col">
+      <Card className="border-slate-200 dark:border-slate-800 overflow-hidden mt-6">
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead className="font-bold text-[15px] text-foreground">TimeStamp</TableHead>
-              <TableHead className="font-bold text-[15px] text-foreground">Branch</TableHead>
-              <TableHead className="font-bold text-[15px] text-foreground">User</TableHead>
-              <TableHead className="font-bold text-[15px] text-foreground text-center">Action</TableHead>
-              <TableHead className="font-bold text-[15px] text-foreground">Modules</TableHead>
-              <TableHead className="font-bold text-[15px] text-foreground">Description</TableHead>
+            <TableRow className="bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-900/50">
+              <TableHead>TimeStamp</TableHead>
+              <TableHead>Branch</TableHead>
+              <TableHead>User</TableHead>
+              <TableHead>Action</TableHead>
+              <TableHead>Modules</TableHead>
+              <TableHead>Description</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -412,7 +418,7 @@ export default function ActivityLog() {
             )}
           </TableBody>
         </Table>
-      </div>
+      </Card>
 
       {/* Pagination & Footer */}
       <div className="flex items-center justify-between pt-2">

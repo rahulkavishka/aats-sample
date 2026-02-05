@@ -7,6 +7,9 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useTheme } from "@/hooks/use-theme"
 import { Sun, Moon } from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false)
@@ -22,6 +25,37 @@ export default function Login() {
             setIsLoading(false)
             navigate("/dashboard")
         }, 1000)
+    }
+
+    // Forgot Password State
+    const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false)
+    const [forgotPasswordForm, setForgotPasswordForm] = useState({
+        username: "",
+        email: "",
+        phone: "",
+        branch: "",
+        role: "",
+        rememberedPassword: ""
+    })
+    const [isRequestingReset, setIsRequestingReset] = useState(false)
+
+    const handleRequestReset = () => {
+        setIsRequestingReset(true)
+        // Simulate API call to send admin request
+        setTimeout(() => {
+            setIsRequestingReset(false)
+            setIsForgotPasswordOpen(false)
+            // Ideally show a toast here
+            alert("Request sent to Admin successfully!")
+            setForgotPasswordForm({
+                username: "",
+                email: "",
+                phone: "",
+                branch: "",
+                role: "",
+                rememberedPassword: ""
+            })
+        }, 1500)
     }
 
     return (
@@ -80,7 +114,7 @@ export default function Login() {
                     </div>
                     <CardTitle className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">Welcome Back</CardTitle>
                     <CardDescription className="text-zinc-500 dark:text-zinc-400">
-                        Enter your credentials to access the AATS system
+                        Enter your credentials to access the AATS Management System
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -137,10 +171,111 @@ export default function Login() {
                 </CardContent>
                 <CardFooter className="flex flex-col gap-4 text-center pt-2">
                     <div className="text-sm text-zinc-500 mb-2">
-                        Trouble signing in? <a href="#" className="text-blue-600 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors hover:underline underline-offset-4">Forgot Password</a>
+                        Trouble signing in? <button type="button" onClick={() => setIsForgotPasswordOpen(true)} className="text-blue-600 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors hover:underline underline-offset-4">Forgot Password</button>
                     </div>
                 </CardFooter>
             </Card>
+
+            {/* Forgot Password Dialog */}
+            <Dialog open={isForgotPasswordOpen} onOpenChange={setIsForgotPasswordOpen}>
+                <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Request Password Reset</DialogTitle>
+                        <DialogDescription>
+                            Submit a request to the admin to reset your password. Please provide as much detail as possible.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="fp-username">Username</Label>
+                                <Input
+                                    id="fp-username"
+                                    placeholder="johndoe"
+                                    value={forgotPasswordForm.username}
+                                    onChange={(e) => setForgotPasswordForm({ ...forgotPasswordForm, username: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="fp-role">Role</Label>
+                                <Select
+                                    value={forgotPasswordForm.role}
+                                    onValueChange={(val) => setForgotPasswordForm({ ...forgotPasswordForm, role: val })}
+                                >
+                                    <SelectTrigger id="fp-role">
+                                        <SelectValue placeholder="Select Role" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="admin">Admin</SelectItem>
+                                        <SelectItem value="manager">Manager</SelectItem>
+                                        <SelectItem value="staff">Staff</SelectItem>
+                                        <SelectItem value="auditor">Auditor</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="fp-email">Email Address</Label>
+                            <Input
+                                id="fp-email"
+                                type="email"
+                                placeholder="name@company.com"
+                                value={forgotPasswordForm.email}
+                                onChange={(e) => setForgotPasswordForm({ ...forgotPasswordForm, email: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="fp-phone">Phone Number</Label>
+                                <Input
+                                    id="fp-phone"
+                                    type="tel"
+                                    placeholder="+94 77 123 4567"
+                                    value={forgotPasswordForm.phone}
+                                    onChange={(e) => setForgotPasswordForm({ ...forgotPasswordForm, phone: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="fp-branch">Branch</Label>
+                                <Select
+                                    value={forgotPasswordForm.branch}
+                                    onValueChange={(val) => setForgotPasswordForm({ ...forgotPasswordForm, branch: val })}
+                                >
+                                    <SelectTrigger id="fp-branch">
+                                        <SelectValue placeholder="Select Branch" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="central">Central</SelectItem>
+                                        <SelectItem value="northeast">North East</SelectItem>
+                                        <SelectItem value="west">West</SelectItem>
+                                        <SelectItem value="south">South</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="fp-password">Last Remembered Password</Label>
+                            <Input
+                                id="fp-password"
+                                type="password"
+                                placeholder="Enter any password you recall"
+                                value={forgotPasswordForm.rememberedPassword}
+                                onChange={(e) => setForgotPasswordForm({ ...forgotPasswordForm, rememberedPassword: e.target.value })}
+                            />
+                            <p className="text-[10px] text-muted-foreground">It does not have to be correct. This helps admin verify your identity.</p>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsForgotPasswordOpen(false)} disabled={isRequestingReset}>Cancel</Button>
+                        <Button onClick={handleRequestReset} disabled={isRequestingReset} className="bg-blue-600 hover:bg-blue-700 text-white">
+                            {isRequestingReset ? "Sending Request..." : "Request Reset"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

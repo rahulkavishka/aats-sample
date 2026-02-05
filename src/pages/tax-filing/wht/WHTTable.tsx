@@ -12,14 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
     Dialog,
     DialogContent,
     DialogHeader,
@@ -33,7 +25,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-import { Search, Calendar as CalendarIcon, MoreHorizontal, Trash2, X, ChevronLeft, ChevronRight, HelpCircle } from 'lucide-react';
+import { Search, Calendar as CalendarIcon, Trash2, X, ChevronLeft, ChevronRight, HelpCircle } from 'lucide-react';
 import { format, isSameMonth, isSameYear, isSameDay, isWithinInterval, startOfDay, endOfDay } from 'date-fns';
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from '@/lib/utils';
@@ -52,7 +44,7 @@ interface WHTTableProps {
 
 type DateFilterType = 'All' | 'Specific' | 'Month' | 'Year' | 'Period';
 
-const WHTTable: React.FC<WHTTableProps> = ({ data, selectedRows, onSelectionChange, onDelete, onBulkDelete, onRowClick }) => {
+const WHTTable: React.FC<WHTTableProps> = ({ data, selectedRows, onSelectionChange, onBulkDelete, onRowClick }) => {
     // --- State ---
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -337,22 +329,21 @@ const WHTTable: React.FC<WHTTableProps> = ({ data, selectedRows, onSelectionChan
             </Card>
 
             {/* --- Table --- */}
-            <div className="rounded-md border bg-card">
+            <Card className="border-slate-200 dark:border-slate-800 overflow-hidden">
                 <Table>
                     <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-[50px]">
+                        <TableRow className="bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                            <TableHead className="pl-6">
                                 <Checkbox
                                     checked={paginatedData.length > 0 && selectedRows.size === paginatedData.length}
                                     onCheckedChange={(c) => handleSelectAll(!!c)}
                                 />
                             </TableHead>
-                            <TableHead className="font-bold text-[15px] text-foreground">ID</TableHead>
-                            <TableHead className="font-bold text-[15px] text-foreground">Client Name</TableHead>
-                            <TableHead className="font-bold text-[15px] text-foreground">WHT No</TableHead>
-                            <TableHead className="font-bold text-[15px] text-foreground">Tax Period</TableHead>
-                            <TableHead className="font-bold text-[15px] text-foreground">Status</TableHead>
-                            <TableHead className="w-[50px]"></TableHead>
+                            <TableHead>ID</TableHead>
+                            <TableHead>Client Name</TableHead>
+                            <TableHead>WHT No</TableHead>
+                            <TableHead>Tax Period</TableHead>
+                            <TableHead>Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -372,7 +363,7 @@ const WHTTable: React.FC<WHTTableProps> = ({ data, selectedRows, onSelectionChan
                                         onRowClick?.(record);
                                     }}
                                 >
-                                    <TableCell>
+                                    <TableCell className="pl-6">
                                         <Checkbox
                                             checked={selectedRows.has(record.id)}
                                             onCheckedChange={(c) => handleSelectRow(record.id, !!c)}
@@ -393,29 +384,12 @@ const WHTTable: React.FC<WHTTableProps> = ({ data, selectedRows, onSelectionChan
                                         </div>
                                     </TableCell>
                                     <TableCell><StatusBadge status={record.status} /></TableCell>
-                                    <TableCell>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400">
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => onDelete(record.id)}>
-                                                    <Trash2 className="mr-2 h-4 w-4" />
-                                                    Delete
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
                                 </TableRow>
                             ))
                         )}
                     </TableBody>
                 </Table>
-            </div>
+            </Card>
 
             {/* --- Pagination Footer --- */}
             <div className="flex items-center justify-between pt-2">

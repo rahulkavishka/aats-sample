@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { Building2, FileText, Download, Printer, HelpCircle, Trash2, Eye, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -69,9 +69,6 @@ function DocumentCard({ doc, onDownload, onPrint, onDelete, onView }: {
                     {doc.name}
                 </p>
                 <div className="flex items-center gap-2 mt-0.5">
-                    <Badge variant="secondary" className="text-[9px] font-bold bg-slate-100 text-slate-500 uppercase h-4 px-1.5">
-                        {doc.category}
-                    </Badge>
                     {doc.size && <span className="text-[10px] font-medium text-slate-400">{doc.size}</span>}
                 </div>
             </div>
@@ -117,9 +114,11 @@ export default function SecretarialAdvisoryClientDetail() {
     }
 
     // Initialize tinData from record if available
-    if (!tinData && record.tinData) {
-        setTinData(record.tinData)
-    }
+    useEffect(() => {
+        if (!tinData && record.tinData) {
+            setTinData(record.tinData)
+        }
+    }, [record, tinData])
 
     const handleSaveTIN = (data: TINData) => {
         setTinData(data)
@@ -166,11 +165,11 @@ export default function SecretarialAdvisoryClientDetail() {
                         </h1>
                     </div>
                 </div>
-                <div className="flex flex-wrap gap-2 mb-0.5">
-                    <Button variant="outline" onClick={handleDownloadAll} className="bg-blue-500 hover:bg-blue-600 text-white border-blue-500 shadow-sm">
+                <div className="flex gap-2 mb-0.5">
+                    <Button variant="download" onClick={handleDownloadAll}>
                         <Download className="mr-2 h-4 w-4" /> Download
                     </Button>
-                    <Button variant="outline" onClick={handlePrintAll} className="bg-slate-700 hover:bg-slate-800 text-white border-slate-700 shadow-sm">
+                    <Button variant="print" onClick={handlePrintAll}>
                         <Printer className="mr-2 h-4 w-4" /> Print
                     </Button>
                 </div>
@@ -265,8 +264,8 @@ export default function SecretarialAdvisoryClientDetail() {
                             <FileText className="size-5 text-blue-500" />
                             <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 uppercase tracking-tight">TIN Registration</h3>
                         </div>
-                        <Button onClick={() => setIsDrawerOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white font-bold uppercase text-[11px] tracking-widest px-6 h-9" size="sm">
-                            <Plus className="h-4 w-4 mr-2" /> Registration
+                        <Button onClick={() => setIsDrawerOpen(true)} className="gap-2 shadow-lg shadow-primary/20 hover:shadow-primary/20 transition-all duration-300 hover:scale-[1.01] text-base">
+                            <Plus className="h-4 w-4" /> Registration
                         </Button>
                     </div>
                     <CardContent className="p-6 space-y-6 flex-1">
@@ -320,35 +319,34 @@ export default function SecretarialAdvisoryClientDetail() {
                 </Card>
             </div>
 
-            {/* Action Buttons above the line */}
-            <div className="flex justify-end gap-3 pt-4 mb-2">
-                <Button
-                    variant="outline"
-                    size="default"
-                    className="bg-white dark:bg-slate-900 px-8 font-bold border-slate-300 shadow-sm hover:bg-slate-50 transition-all font-mono uppercase text-xs"
-                    onClick={() => navigate(`/secretarial-advisory/new/${id}`)}
-                >
-                    Edit
-                </Button>
-                <Button
-                    variant="destructive"
-                    size="default"
-                    className="px-8 font-bold shadow-lg shadow-red-500/20 font-mono uppercase text-xs"
-                    onClick={() => setDeleteDialogOpen(true)}
-                >
-                    Remove Record
-                </Button>
-            </div>
 
             {/* Standard Footer line and Learn More Below */}
-            <div className="pt-4 pb-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6 mt-auto">
+            <div className="pt-8 pb-6 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
                 <button
-                    className="text-sm text-slate-500 hover:text-blue-600 flex items-center gap-2 group transition-colors"
+                    className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2 group transition-colors order-2 md:order-1"
                     onClick={() => setHelpDialogOpen(true)}
                 >
-                    <HelpCircle className="h-4 w-4 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                    <HelpCircle className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                     Learn more about Client Page
                 </button>
+                <div className="flex gap-3 order-1 md:order-2">
+                    <Button
+                        variant="outline"
+                        size="default"
+                        className="bg-white dark:bg-slate-900 w-28"
+                        onClick={() => navigate(`/secretarial-advisory/new/${id}`)}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        size="default"
+                        className="w-28"
+                        onClick={() => setDeleteDialogOpen(true)}
+                    >
+                        Delete
+                    </Button>
+                </div>
             </div>
 
             {/* Dialogs */}

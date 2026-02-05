@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { Search, Trash2, ChevronLeft, ChevronRight, Plus, HelpCircle, X, Calendar as CalendarIcon, Building2, Users } from "lucide-react"
+import { Search, Trash2, ChevronLeft, ChevronRight, Plus, HelpCircle, X, Calendar as CalendarIcon } from "lucide-react"
 import { format, isSameDay, isSameMonth, isSameYear, isWithinInterval, startOfDay, endOfDay } from "date-fns"
 import type { DateRange } from "react-day-picker"
 
@@ -14,31 +14,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent } from "@/components/ui/card"
-import { epfEtfRecords, type EpfEtfRecord } from "@/data/secretarial-advisory/records"
+import { epfEtfRecords } from "@/data/secretarial-advisory/records"
 
 const years = Array.from({ length: 10 }, (_, i) => (new Date().getFullYear() - 5) + i).map(String);
 const months = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
 ];
-
-// Sample names for realistic data
-const sampleNames = [
-    "John Doe", "Jane Smith", "Michael Johnson", "Emily Davis", "Chris Brown",
-    "Patricia Wilson", "Matthew Miller", "Jennifer Moore", "Joshua Taylor", "Amanda Anderson",
-    "David Thomas", "Sarah Jackson", "James White", "Jessica Harris", "Robert Martin",
-    "Mary Thompson", "Daniel Garcia", "Lisa Martinez", "Paul Robinson", "Kimberly Clark",
-    "Mark Rodriguez", "Elizabeth Lewis", "Donald Lee", "Nancy Walker", "George Hall",
-    "Karen Allen", "Kenneth Young", "Betty Hernandez", "Steven King", "Margaret Wright"
-];
-
-// Helper to generate mock staff data with realistic names
-const generateMockStaff = (count: number) => {
-    return Array.from({ length: count }, (_, i) => ({
-        id: `STF-${String(i + 1).padStart(3, '0')}`,
-        name: sampleNames[i % sampleNames.length] + (i >= sampleNames.length ? ` ${Math.floor(i / sampleNames.length) + 1}` : "")
-    }))
-}
 
 export default function EpfEtfDashboard() {
     const navigate = useNavigate()
@@ -52,17 +34,6 @@ export default function EpfEtfDashboard() {
     const [selectedMonth, setSelectedMonth] = useState<string>(new Date().getMonth().toString())
     const [selectedYear, setSelectedYear] = useState<string>(new Date().getFullYear().toString())
     const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
-
-    // Side Panel States
-    const [isPanelOpen, setIsPanelOpen] = useState(false)
-    const [activeRecord, setActiveRecord] = useState<EpfEtfRecord | null>(null)
-    const [staffData, setStaffData] = useState<{ id: string, name: string }[]>([])
-    const [selectedStaffIds, setSelectedStaffIds] = useState<string[]>([])
-
-    // Panel Search & Pagination States
-    const [staffSearchTerm, setStaffSearchTerm] = useState("")
-    const [staffPage, setStaffPage] = useState(1)
-    const staffItemsPerPage = 15
 
     const toggleSelect = (id: string) => {
         setSelectedRows(prev =>
@@ -121,74 +92,9 @@ export default function EpfEtfDashboard() {
         setCurrentPage(1)
     }, [searchTerm, processFilter, filterType, selectedDate, selectedMonth, selectedYear, dateRange])
 
-    // Side Panel Logic
-    const openPanel = (record: EpfEtfRecord, e: React.MouseEvent) => {
-        e.stopPropagation() // Prevent row click
-        setActiveRecord(record)
-        setStaffData(generateMockStaff(record.noOfStaffs))
-        setSelectedStaffIds([])
-        setStaffSearchTerm("")
-        setStaffPage(1)
-        setIsPanelOpen(true)
-    }
-
-    const closePanel = () => {
-        setIsPanelOpen(false)
-        setActiveRecord(null)
-    }
-
-    const toggleStaffSelect = (id: string) => {
-        setSelectedStaffIds(prev =>
-            prev.includes(id) ? prev.filter(sid => sid !== id) : [...prev, id]
-        )
-    }
-
-    const toggleAllStaff = () => {
-        // Toggle only visible items on current page
-        const visibleIds = currentStaffRecords.map(s => s.id)
-        const allVisibleSelected = visibleIds.length > 0 && visibleIds.every(id => selectedStaffIds.includes(id))
-
-        if (allVisibleSelected) {
-            setSelectedStaffIds(prev => prev.filter(id => !visibleIds.includes(id)))
-        } else {
-            // Add missing visible IDs
-            const newIds = [...selectedStaffIds]
-            visibleIds.forEach(id => {
-                if (!newIds.includes(id)) newIds.push(id)
-            })
-            setSelectedStaffIds(newIds)
-        }
-    }
-
-    // Filter and Sort Staff Data
-    const filteredStaff = staffData.filter(s =>
-        s.name.toLowerCase().includes(staffSearchTerm.toLowerCase()) ||
-        s.id.toLowerCase().includes(staffSearchTerm.toLowerCase())
-    )
-
-    // Pagination for Staff Data
-    const totalStaffPages = Math.ceil(filteredStaff.length / staffItemsPerPage)
-    const staffStartIndex = (staffPage - 1) * staffItemsPerPage
-    const currentStaffRecords = filteredStaff.slice(staffStartIndex, staffStartIndex + staffItemsPerPage)
-
-    // Reset page on search
-    useEffect(() => {
-        setStaffPage(1)
-    }, [staffSearchTerm])
-
-    const deleteSelectedStaff = () => {
-        // Mock deletion
-        setStaffData(prev => prev.filter(s => !selectedStaffIds.includes(s.id)))
-        setSelectedStaffIds([])
-    }
-
-    const cancelSelection = () => {
-        setSelectedStaffIds([])
-    }
-
     return (
         <div className="flex flex-col space-y-6 p-4 md:p-6 animate-in fade-in duration-500 pb-10 relative overflow-hidden">
-            <div className={`transition-all duration-300 ${isPanelOpen ? "w-[75%]" : "w-full"}`}>
+            <div className="w-full">
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">EPF / ETF</h1>
@@ -353,29 +259,28 @@ export default function EpfEtfDashboard() {
                     </CardContent>
                 </Card>
 
-                <div className="rounded-md border bg-card shadow-sm flex flex-col mt-4">
+                <Card className="border-slate-200 dark:border-slate-800 overflow-hidden mt-6">
                     <Table>
                         <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[50px] pl-6 pr-4">
+                            <TableRow className="bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-900/50">
+                                <TableHead className="pl-6">
                                     <Checkbox
                                         checked={epfEtfRecords.length > 0 && selectedRows.length === epfEtfRecords.length}
                                         onCheckedChange={toggleSelectAll}
                                     />
                                 </TableHead>
-                                <TableHead className="font-bold text-[15px] text-foreground">ID</TableHead>
-                                <TableHead className="font-bold text-[15px] text-foreground">Date</TableHead>
-                                <TableHead className="font-bold text-[15px] text-foreground">Client Name</TableHead>
-                                <TableHead className="font-bold text-[15px] text-foreground">Company Name</TableHead>
-                                <TableHead className="font-bold text-[15px] text-foreground">No of Staffs</TableHead>
-                                <TableHead className="font-bold text-[15px] text-foreground">Process</TableHead>
-                                <TableHead className="w-[50px]"></TableHead> {/* Chevron Column */}
+                                <TableHead>ID</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Client Name</TableHead>
+                                <TableHead>Company Name</TableHead>
+                                <TableHead>No of Staffs</TableHead>
+                                <TableHead>Process</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {currentRecords.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="h-32 text-center text-muted-foreground">
+                                    <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
                                         No records found matching your filters.
                                     </TableCell>
                                 </TableRow>
@@ -384,7 +289,8 @@ export default function EpfEtfDashboard() {
                                     <TableRow
                                         key={record.id}
                                         data-state={selectedRows.includes(record.id) ? "selected" : undefined}
-                                        className="hover:bg-muted/50 transition-colors"
+                                        className="hover:bg-muted/50 transition-colors cursor-pointer group"
+                                        onClick={() => navigate(`/secretarial-advisory/epf-etf/${record.id}`)}
                                     >
                                         <TableCell className="pl-6 pr-4" onClick={(e) => e.stopPropagation()}>
                                             <Checkbox
@@ -395,7 +301,7 @@ export default function EpfEtfDashboard() {
                                         <TableCell className="font-medium text-xs text-muted-foreground">{record.id}</TableCell>
                                         <TableCell className="whitespace-nowrap">{format(new Date(record.date), "dd/MM/yyyy")}</TableCell>
                                         <TableCell className="font-medium">
-                                            <span className="font-semibold text-foreground hover:text-primary transition-colors">
+                                            <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
                                                 {record.clientName}
                                             </span>
                                         </TableCell>
@@ -404,22 +310,12 @@ export default function EpfEtfDashboard() {
                                         <TableCell>
                                             <Badge variant="outline" className="font-mono text-[13px] px-3 py-1 uppercase tracking-wider font-bold">{record.process}</Badge>
                                         </TableCell>
-                                        <TableCell onClick={(e) => e.stopPropagation()}>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-8 w-8 hover:text-primary transition-colors"
-                                                onClick={(e) => openPanel(record, e)}
-                                            >
-                                                <ChevronLeft className="h-4 w-4" />
-                                            </Button>
-                                        </TableCell>
                                     </TableRow>
                                 ))
                             )}
                         </TableBody>
                     </Table>
-                </div>
+                </Card>
 
                 <div className="flex items-center justify-between pt-2 mt-4">
                     <button
@@ -442,150 +338,6 @@ export default function EpfEtfDashboard() {
                     </div>
                 </div>
             </div>
-
-            {/* Slide-out Panel */}
-            <div
-                className={`fixed top-0 right-0 h-full w-full sm:w-[500px] md:w-[600px] bg-[#020617] border-l border-slate-800 shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${isPanelOpen ? "translate-x-0" : "translate-x-full"
-                    }`}
-            >
-                {activeRecord && (
-                    <div className="flex flex-col h-full bg-[#020617] text-slate-200">
-                        {/* Header */}
-                        <div className="p-6 border-b border-slate-800 flex items-start justify-between bg-slate-900/50">
-                            <div className="flex items-center gap-4">
-                                <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-900/20 text-white shrink-0">
-                                    <Building2 className="h-5 w-5" />
-                                </div>
-                                <div className="overflow-hidden">
-                                    <h3 className="text-lg font-bold text-white leading-none truncate" title={activeRecord.companyName}>{activeRecord.companyName}</h3>
-                                    <p className="text-slate-400 text-xs mt-1">EPF/ETF Registration</p>
-                                </div>
-                            </div>
-                            <Button variant="ghost" size="icon" onClick={closePanel} className="text-slate-400 hover:text-white hover:bg-slate-800">
-                                <X className="h-5 w-5" />
-                            </Button>
-                        </div>
-
-                        {/* Content */}
-                        <div className="flex-1 overflow-auto p-6 space-y-4">
-                            <Card className="bg-[#0f172a] border-slate-800 shadow-md text-slate-200">
-                                <div className="p-4 border-b border-slate-800 bg-slate-900/50 flex items-center gap-2">
-                                    <Users className="h-4 w-4 text-blue-500" />
-                                    <span className="text-xs font-bold uppercase tracking-wider text-white">Staff Details ({staffData.length})</span>
-                                </div>
-
-                                {/* Staff Search */}
-                                <div className="p-4 border-b border-slate-800 bg-slate-900/30">
-                                    <div className="relative">
-                                        <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-500" />
-                                        <Input
-                                            placeholder="Search Staff ID or Name..."
-                                            className="pl-9 h-9 text-xs bg-slate-800 border-slate-700 text-white focus-visible:ring-blue-500 placeholder:text-slate-500"
-                                            value={staffSearchTerm}
-                                            onChange={(e) => setStaffSearchTerm(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-
-                                {selectedStaffIds.length > 0 && (
-                                    <div className="p-2 bg-blue-900/20 border-b border-slate-800 flex items-center justify-between px-4 animate-in slide-in-from-top-2">
-                                        <span className="text-xs font-medium text-blue-400">
-                                            {selectedStaffIds.length} staff selected
-                                        </span>
-                                        <div className="flex gap-2">
-                                            <Button variant="ghost" size="sm" className="h-7 text-xs text-slate-400 hover:text-white hover:bg-slate-800" onClick={cancelSelection}>
-                                                Cancel
-                                            </Button>
-                                            <Button variant="destructive" size="sm" className="h-7 text-xs" onClick={deleteSelectedStaff}>
-                                                Delete
-                                            </Button>
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="flex-1 overflow-hidden">
-                                    <Table>
-                                        <TableHeader className="bg-slate-900/50">
-                                            <TableRow className="border-slate-800 hover:bg-transparent">
-                                                <TableHead className="w-[40px] border-slate-800">
-                                                    <Checkbox
-                                                        className="border-slate-600 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-                                                        checked={currentStaffRecords.length > 0 && currentStaffRecords.every(s => selectedStaffIds.includes(s.id))}
-                                                        onCheckedChange={toggleAllStaff}
-                                                    />
-                                                </TableHead>
-                                                <TableHead className="font-bold text-[10px] uppercase text-slate-500 border-slate-800">Staff ID</TableHead>
-                                                <TableHead className="font-bold text-[10px] uppercase text-slate-500 border-slate-800">Name</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {currentStaffRecords.length === 0 ? (
-                                                <TableRow className="border-slate-800 hover:bg-transparent">
-                                                    <TableCell colSpan={3} className="text-center text-slate-500 py-8 text-xs italic">
-                                                        No staff records match your search.
-                                                    </TableCell>
-                                                </TableRow>
-                                            ) : (
-                                                currentStaffRecords.map((staff) => (
-                                                    <TableRow
-                                                        key={staff.id}
-                                                        className="cursor-pointer border-slate-800 hover:bg-slate-800/50 transition-colors"
-                                                        onClick={() => navigate(`/secretarial-advisory/epf-etf/${activeRecord!.id}/staff/${staff.id}`, { state: { staff } })}
-                                                    >
-                                                        <TableCell className="py-3 border-slate-800" onClick={(e) => e.stopPropagation()}>
-                                                            <Checkbox
-                                                                className="border-slate-600 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-                                                                checked={selectedStaffIds.includes(staff.id)}
-                                                                onCheckedChange={() => toggleStaffSelect(staff.id)}
-                                                            />
-                                                        </TableCell>
-                                                        <TableCell className="font-mono text-xs text-blue-400 py-3 border-slate-800">{staff.id}</TableCell>
-                                                        <TableCell className="text-sm text-slate-300 py-3 border-slate-800">{staff.name}</TableCell>
-                                                    </TableRow>
-                                                ))
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-
-                                {/* Staff Pagination */}
-                                {totalStaffPages > 1 && (
-                                    <div className="p-4 border-t border-slate-800 bg-slate-900/30 flex items-center justify-between">
-                                        <span className="text-xs text-slate-500">
-                                            Page {staffPage} of {totalStaffPages}
-                                        </span>
-                                        <div className="flex items-center gap-1">
-                                            <Button
-                                                variant="outline"
-                                                size="icon"
-                                                className="h-7 w-7 bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white"
-                                                disabled={staffPage === 1}
-                                                onClick={() => setStaffPage(p => p - 1)}
-                                            >
-                                                <ChevronLeft className="h-3 w-3" />
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                size="icon"
-                                                className="h-7 w-7 bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-white"
-                                                disabled={staffPage >= totalStaffPages}
-                                                onClick={() => setStaffPage(p => p + 1)}
-                                            >
-                                                <ChevronRight className="h-3 w-3" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                )}
-                            </Card>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Overlay */}
-            {isPanelOpen && (
-                <div className="fixed inset-0 bg-black/20 z-40" onClick={closePanel} />
-            )}
 
             {/* Learn More Dialog */}
             <Dialog open={learnMoreOpen} onOpenChange={setLearnMoreOpen}>

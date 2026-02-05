@@ -1,11 +1,13 @@
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { HelpCircle, FileText, Download, Printer } from "lucide-react"
+import { HelpCircle, FileText, Download, Printer, Building2, Users, Fingerprint, User, MapPin, CreditCard, Activity } from "lucide-react"
 import SubModuleHeader from "@/components/secretarial-advisory/SubModuleHeader"
 import { secretarialRecords } from "@/data/secretarialData"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
 export default function EPFDetail() {
     const { id } = useParams()
@@ -22,29 +24,104 @@ export default function EPFDetail() {
 
     return (
         <div className="flex flex-col h-full space-y-6 p-4 md:p-6 animate-in fade-in duration-500 pb-20">
-            <SubModuleHeader title="EPF/ETF Details" showNavigation={false} />
+            <SubModuleHeader title={record.clientName} showNavigation={false} />
 
-            {/* General Section */}
-            <div className="space-y-6">
-                <div>
-                    <h3 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-6 px-1 border-l-2 border-blue-500 pl-3">GENERAL</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        <DetailField label="ID" value={record.id} />
-                        <DetailField label="DATE" value={record.date} />
-                        <DetailField label="NAME" value={record.clientName} />
-                        <DetailField label="COMPANY NAME" value={record.companyName} />
-                        <DetailField label="PHONE NO" value={record.phoneNo} />
-                        <DetailField label="NO OF STAFF" value="50" />
+            {/* Detail Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Employer Overview Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Employer Overview</h3>
                     </div>
-                </div>
+                    <CardContent className="p-6">
+                        <div className="space-y-6">
+                            <DetailField label="Company Name" value={record.companyName} />
+                            <div className="grid grid-cols-2 gap-4">
+                                <DetailField label="EPF Number" value="EPF/COL/89234" />
+                                <DetailField label="ETF Number" value="ETF/COL/11256" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
 
-                <div className="border-t border-slate-100 dark:border-slate-800 pt-8">
-                    <h3 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-6 px-1 border-l-2 border-blue-500 pl-3">STAFF INFORMATION</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        <DetailField label="STAFF ID" value="S1012" />
-                        <DetailField label="NAME" value="SURESH" />
+                {/* Status & Validity Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <Activity className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Registration Status</h3>
                     </div>
-                </div>
+                    <CardContent className="p-6">
+                        <div className="space-y-6">
+                            <div className="space-y-1.5">
+                                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Status</p>
+                                <Badge className="bg-green-500 hover:bg-green-600 text-white border-none font-bold text-[10px] px-3 py-0.5 uppercase tracking-wider">Active</Badge>
+                            </div>
+                            <DetailField label="Registration Date" value={record.date} />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Contact & Address Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Contact & Address</h3>
+                    </div>
+                    <CardContent className="p-6">
+                        <div className="space-y-6">
+                            <DetailField label="Address Information" value={record.address || "000/0, KATUGASTHOTA, KANDY"} />
+                            <div className="grid grid-cols-2 gap-4">
+                                <DetailField label="Primary Contact" value={record.clientName} />
+                                <DetailField label="Phone No" value={record.phoneNo || "—"} />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Staff Information Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden lg:col-span-2">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <Users className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Staff Information</h3>
+                    </div>
+                    <CardContent className="p-6">
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-slate-100 dark:border-slate-800">
+                                <DetailField label="Total Staff Count" value="50" />
+                                <DetailField label="Staff Category" value="Executive & Operational" />
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 shadow-sm">
+                                    <div className="bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800">
+                                        <Fingerprint className="h-5 w-5 text-blue-500" />
+                                    </div>
+                                    <DetailField label="Primary Staff ID" value="S1012" />
+                                </div>
+                                <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 shadow-sm">
+                                    <div className="bg-white dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-800">
+                                        <User className="h-5 w-5 text-blue-500" />
+                                    </div>
+                                    <DetailField label="Authorized Name" value="SURESH" />
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Contribution Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <CreditCard className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Contribution Info</h3>
+                    </div>
+                    <CardContent className="p-6">
+                        <div className="space-y-6">
+                            <DetailField label="Monthly Contribution" value="LKR 125,000.00" />
+                            <DetailField label="Payment Method" value="Bank Transfer (Online)" />
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
             {/* Source Document Section */}
@@ -75,28 +152,8 @@ export default function EPFDetail() {
                 </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-3 pt-4 mb-2">
-                <Button
-                    variant="outline"
-                    size="default"
-                    className="bg-white dark:bg-slate-900 px-8 font-bold border-slate-300 shadow-sm hover:bg-slate-50 transition-all font-mono uppercase text-xs"
-                    onClick={() => navigate(`/secretarial-advisory/epf/edit/${id}`)}
-                >
-                    Edit
-                </Button>
-                <Button
-                    variant="destructive"
-                    size="default"
-                    className="px-8 font-bold shadow-lg shadow-red-500/20 font-mono uppercase text-xs"
-                    onClick={() => setDeleteDialogOpen(true)}
-                >
-                    Remove Record
-                </Button>
-            </div>
-
-            {/* Standard Footer line and Learn More Below */}
-            <div className="pt-4 pb-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6 mt-auto">
+            {/* Reorganized Action row Footer */}
+            <div className="pt-8 pb-6 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
                 <button
                     className="text-sm text-slate-500 hover:text-blue-600 flex items-center gap-2 group transition-colors"
                     onClick={() => setHelpDialogOpen(true)}
@@ -104,6 +161,25 @@ export default function EPFDetail() {
                     <HelpCircle className="h-4 w-4 text-slate-400 group-hover:text-blue-500 transition-colors" />
                     Learn more about EPF/ETF Registration
                 </button>
+
+                <div className="flex items-center gap-3">
+                    <Button
+                        variant="outline"
+                        size="default"
+                        className="bg-white dark:bg-slate-900 w-28"
+                        onClick={() => navigate(`/secretarial-advisory/epf/edit/${id}`)}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        size="default"
+                        className="w-28"
+                        onClick={() => setDeleteDialogOpen(true)}
+                    >
+                        Delete
+                    </Button>
+                </div>
             </div>
 
             {/* Help Dialog */}
@@ -151,7 +227,11 @@ export default function EPFDetail() {
                     <DialogHeader><DialogTitle>Delete Record</DialogTitle><DialogDescription>Are you sure? This cannot be undone.</DialogDescription></DialogHeader>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-                        <Button variant="destructive" onClick={() => { setDeleteDialogOpen(false); navigate("/secretarial-advisory/epf"); }}>Delete</Button>
+                        <Button
+                            variant="destructive"
+                            size="default"
+                            className="px-8 font-bold shadow-lg shadow-red-500/20 font-mono uppercase text-xs"
+                            onClick={() => { setDeleteDialogOpen(false); navigate("/secretarial-advisory/epf-etf"); }}>Delete</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
@@ -162,7 +242,7 @@ export default function EPFDetail() {
 function DetailField({ label, value }: { label: string; value: string }) {
     return (
         <div className="space-y-1.5">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</p>
+            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{label}</p>
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-tight">{value || "—"}</p>
         </div>
     )

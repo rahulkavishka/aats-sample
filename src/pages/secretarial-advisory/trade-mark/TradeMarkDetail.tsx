@@ -3,10 +3,11 @@ import { useParams, useNavigate } from "react-router-dom"
 import SubModuleHeader from "@/components/secretarial-advisory/SubModuleHeader"
 import { secretarialRecords } from "@/data/secretarialData"
 
-import { HelpCircle, FileText, Download, Printer } from "lucide-react"
+import { HelpCircle, FileText, Download, Printer, Building2, Briefcase, MapPin, Calendar } from "lucide-react"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 
 export default function TradeMarkDetail() {
     const { id } = useParams()
@@ -26,20 +27,68 @@ export default function TradeMarkDetail() {
 
     return (
         <div className="flex flex-col h-full space-y-6 p-4 md:p-6 animate-in fade-in duration-500 pb-20">
-            <SubModuleHeader title="Trade Details" showNavigation={false} />
+            <SubModuleHeader title={record.companyName} showNavigation={false} />
 
-            {/* General Section */}
-            <div className="space-y-6">
-                <div>
-                    <h3 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-6 px-1 border-l-2 border-blue-500 pl-3">GENERAL</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        <DetailField label="ID" value={record.id} />
-                        <DetailField label="DATE" value={record.date} />
-                        <DetailField label="NAME" value={record.clientName} />
-                        <DetailField label="COMPANY NAME" value={record.companyName} />
-                        <DetailField label="CODE" value="867958" />
+            {/* Detail Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Business Overview Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Business Overview</h3>
                     </div>
-                </div>
+                    <CardContent className="p-6">
+                        <div className="grid grid-cols-1 gap-6">
+                            <DetailField label="Business Name" value={record.companyName} />
+                            <div className="grid grid-cols-2 gap-4">
+                                <DetailField label="Business Type" value={record.type || "Sole Proprietorship"} />
+                                <DetailField label="Registration Number" value="867958" />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Nature of Business Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <Briefcase className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Nature of Business</h3>
+                    </div>
+                    <CardContent className="p-6">
+                        <DetailField label="Nature of Business" value="Import and Export of Electrical Components and General Trading Services" />
+                    </CardContent>
+                </Card>
+
+                {/* Address & Contact Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Address & Contact Details</h3>
+                    </div>
+                    <CardContent className="p-6">
+                        <div className="space-y-6">
+                            <DetailField label="Address Information" value={record.address || "000/0, KATUGASTHOTA, KANDY"} />
+                            <div className="grid grid-cols-2 gap-4">
+                                <DetailField label="Email" value={record.email || "UNI@GMAIL.COM"} />
+                                <DetailField label="Phone No" value={record.phoneNo || "077 546 4455"} />
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Timeline & Other Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Timeline & Identification</h3>
+                    </div>
+                    <CardContent className="p-6">
+                        <div className="grid grid-cols-2 gap-6">
+                            <DetailField label="Start Date" value={record.date} />
+                            <DetailField label="Record ID" value={record.id} />
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
             {/* Source Document Section */}
@@ -70,28 +119,8 @@ export default function TradeMarkDetail() {
                 </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-3 pt-4 mb-2">
-                <Button
-                    variant="outline"
-                    size="default"
-                    className="bg-white dark:bg-slate-900 px-8 font-bold border-slate-300 shadow-sm hover:bg-slate-50 transition-all font-mono uppercase text-xs"
-                    onClick={() => navigate(`/secretarial-advisory/trade-mark/edit/${id}`)}
-                >
-                    Edit
-                </Button>
-                <Button
-                    variant="destructive"
-                    size="default"
-                    className="px-8 font-bold shadow-lg shadow-red-500/20 font-mono uppercase text-xs"
-                    onClick={() => setDeleteDialogOpen(true)}
-                >
-                    Remove Record
-                </Button>
-            </div>
-
-            {/* Standard Footer line and Learn More Below */}
-            <div className="pt-4 pb-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6 mt-auto">
+            {/* Reorganized Action row Footer */}
+            <div className="pt-8 pb-6 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
                 <button
                     className="text-sm text-slate-500 hover:text-blue-600 flex items-center gap-2 group transition-colors"
                     onClick={() => setHelpDialogOpen(true)}
@@ -99,6 +128,25 @@ export default function TradeMarkDetail() {
                     <HelpCircle className="h-4 w-4 text-slate-400 group-hover:text-blue-500 transition-colors" />
                     Learn more about Trade Mark Registration
                 </button>
+
+                <div className="flex items-center gap-3">
+                    <Button
+                        variant="outline"
+                        size="default"
+                        className="bg-white dark:bg-slate-900 w-28"
+                        onClick={() => navigate(`/secretarial-advisory/trade-mark/edit/${id}`)}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        size="default"
+                        className="w-28"
+                        onClick={() => setDeleteDialogOpen(true)}
+                    >
+                        Delete
+                    </Button>
+                </div>
             </div>
 
             {/* Help Dialog */}
@@ -157,7 +205,7 @@ export default function TradeMarkDetail() {
 function DetailField({ label, value }: { label: string; value: string }) {
     return (
         <div className="space-y-1.5">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</p>
+            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{label}</p>
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-tight">{value || "—"}</p>
         </div>
     )

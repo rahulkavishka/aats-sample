@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from '@/components/ui/input';
-import { User, FileText, ChevronRight, Printer, Download, Edit, Save, X } from 'lucide-react';
+import { User, FileText, ChevronRight, Printer, Download, Edit } from 'lucide-react';
 
 interface ClientDetailsDrawerProps {
     open: boolean;
@@ -204,20 +204,20 @@ const ClientDetailsDrawer: React.FC<ClientDetailsDrawerProps> = ({ open, onClose
                         <div className="flex gap-2">
                             {isEditing ? (
                                 <>
-                                    <Button variant="outline" onClick={handleCancel} className="gap-2">
-                                        <X className="h-4 w-4" /> CANCEL
+                                    <Button variant="outline" size="default" className="w-28 bg-background" onClick={handleCancel}>
+                                        Cancel
                                     </Button>
-                                    <Button onClick={handleSave} className="gap-2 min-w-[100px]">
-                                        <Save className="h-4 w-4" /> SAVE
+                                    <Button onClick={handleSave} className="w-28">
+                                        Save
                                     </Button>
                                 </>
                             ) : (
                                 <>
-                                    <Button variant="outline" className="text-destructive border-destructive/20 hover:bg-destructive/10 hover:text-destructive gap-2">
-                                        DELETE
+                                    <Button variant="outline" size="default" className="w-28 bg-background" onClick={() => setIsEditing(true)}>
+                                        Edit
                                     </Button>
-                                    <Button onClick={() => setIsEditing(true)} className="gap-2 min-w-[100px]">
-                                        <Edit className="h-4 w-4" /> EDIT
+                                    <Button variant="destructive" size="default" className="w-28">
+                                        Delete
                                     </Button>
                                 </>
                             )}

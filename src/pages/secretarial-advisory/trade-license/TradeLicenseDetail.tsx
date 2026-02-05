@@ -3,10 +3,12 @@ import { useParams, useNavigate } from "react-router-dom"
 import SubModuleHeader from "@/components/secretarial-advisory/SubModuleHeader"
 import { secretarialRecords } from "@/data/secretarialData"
 
-import { HelpCircle, FileText, Download, Printer } from "lucide-react"
+import { HelpCircle, FileText, Download, Printer, FileBadge, CalendarClock, Activity } from "lucide-react"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
 export default function TradeLicenseDetail() {
     const { id } = useParams()
@@ -20,21 +22,56 @@ export default function TradeLicenseDetail() {
 
     return (
         <div className="flex flex-col min-h-[85vh] justify-between p-4 md:p-6 animate-in fade-in duration-500 pb-20">
-            <SubModuleHeader title="Trade License Details" showNavigation={false} />
+            <SubModuleHeader title={record.companyName} showNavigation={false} />
 
-            {/* General Section */}
-            <div className="space-y-6">
-                <div>
-                    <h3 className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-6 px-1 border-l-2 border-blue-500 pl-3">GENERAL</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        <DetailField label="ID" value={record.id} />
-                        <DetailField label="DATE" value={record.date} />
-                        <DetailField label="NAME" value={record.clientName} />
-                        <DetailField label="COMPANY NAME" value={record.companyName} />
-                        <DetailField label="CODE" value="867958" />
-                        <DetailField label="ASSIGNMENT" value="FINANCE" />
+            {/* Detail Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 mb-6">
+                {/* License Information Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <FileBadge className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">License Information</h3>
                     </div>
-                </div>
+                    <CardContent className="p-6">
+                        <div className="space-y-6">
+                            <DetailField label="License Number" value="TL-2026-8892" />
+                            <DetailField label="License Category" value="General Trading & Services" />
+                            <DetailField label="Issuing Authority" value="Colombo Municipal Council" />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Validity Period Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <CalendarClock className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Validity Period</h3>
+                    </div>
+                    <CardContent className="p-6">
+                        <div className="space-y-6">
+                            <DetailField label="Issued Date" value={record.date} />
+                            <DetailField label="Expiry Date" value="31/12/2026" />
+                            <DetailField label="Grace Period" value="14 Days" />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Status & Renewal Card */}
+                <Card className="shadow-sm border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden flex flex-col">
+                    <div className="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                        <Activity className="h-4 w-4 text-blue-500" />
+                        <h3 className="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-widest">Status & Renewal</h3>
+                    </div>
+                    <CardContent className="p-6 flex-1 flex flex-col justify-between">
+                        <div className="space-y-6">
+                            <div className="space-y-1.5">
+                                <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Status</p>
+                                <Badge className="bg-green-500 hover:bg-green-600 text-white border-none font-bold text-[10px] px-3 py-0.5 uppercase tracking-wider">Active</Badge>
+                            </div>
+                            <DetailField label="Renewal Information" value="Eligible for renewal from 01/11/2026" />
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
             {/* Source Document Section */}
@@ -65,28 +102,8 @@ export default function TradeLicenseDetail() {
                 </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-3 pt-4 mb-2">
-                <Button
-                    variant="outline"
-                    size="default"
-                    className="bg-white dark:bg-slate-900 px-8 font-bold border-slate-300 shadow-sm hover:bg-slate-50 transition-all font-mono uppercase text-xs"
-                    onClick={() => navigate(`/secretarial-advisory/trade-license/edit/${id}`)}
-                >
-                    Edit
-                </Button>
-                <Button
-                    variant="destructive"
-                    size="default"
-                    className="px-8 font-bold shadow-lg shadow-red-500/20 font-mono uppercase text-xs"
-                    onClick={() => setDeleteDialogOpen(true)}
-                >
-                    Remove Record
-                </Button>
-            </div>
-
-            {/* Standard Footer line and Learn More Below */}
-            <div className="pt-4 pb-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-6">
+            {/* Reorganized Action row Footer */}
+            <div className="pt-8 pb-6 border-t flex flex-col md:flex-row justify-between items-center gap-4 mt-auto">
                 <button
                     className="text-sm text-slate-500 hover:text-blue-600 flex items-center gap-2 group transition-colors"
                     onClick={() => setHelpDialogOpen(true)}
@@ -94,6 +111,25 @@ export default function TradeLicenseDetail() {
                     <HelpCircle className="h-4 w-4 text-slate-400 group-hover:text-blue-500 transition-colors" />
                     Learn more about Trade License Registration
                 </button>
+
+                <div className="flex items-center gap-3">
+                    <Button
+                        variant="outline"
+                        size="default"
+                        className="bg-white dark:bg-slate-900 w-28"
+                        onClick={() => navigate(`/secretarial-advisory/trade-license/edit/${id}`)}
+                    >
+                        Edit
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        size="default"
+                        className="w-28"
+                        onClick={() => setDeleteDialogOpen(true)}
+                    >
+                        Delete
+                    </Button>
+                </div>
             </div>
 
             {/* Help Dialog */}
@@ -152,7 +188,7 @@ export default function TradeLicenseDetail() {
 function DetailField({ label, value }: { label: string; value: string }) {
     return (
         <div className="space-y-1.5">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</p>
+            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">{label}</p>
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-tight">{value || "—"}</p>
         </div>
     )
